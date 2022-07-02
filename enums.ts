@@ -98,8 +98,10 @@ const strRAK_PARAM = [
     "NWKSKEY",
     "NWM",
     "NJM",
+    "NJS",
     "CLASS",
-    "BAND"
+    "BAND",
+    "JOIN"
 ]
 
 enum eRUI3_PARAM {
@@ -111,8 +113,10 @@ enum eRUI3_PARAM {
     NWKSKEY,
     NWM,
     NJM,
+    NJS,
     CLASS,
-    BAND
+    BAND,
+    JOIN
 }
 
 enum eSTATUS_MASK {

@@ -7,7 +7,7 @@ namespace LoRa {
     let FLAG_MSG_REQ = 0
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
-    
+    serial.setRxBufferSize(32)
 
     /**
      * Communication
@@ -91,10 +91,22 @@ namespace LoRa {
     /**
      * Device Control
      */
-    //% blockId=DeviceStatus
-    //% block="Get Device Status Bit %mask"
+    //% blockId=DeviceStatusSet
+    //% block="Set Device Status Bit %mask to %state"
     //% advanced=false
-    export function getStatus(mask: eSTATUS_MASK){
+    export function setStatus(mask: eSTATUS_MASK, state: number){
+        if (state){
+            status = status | mask
+        }
+        else {
+            status = status & (~mask)
+        }
+    }
+
+    //% blockId=DeviceStatusGet
+    //% block="Get Device Status Bit %mask"
+    //% advanced=true
+    export function getStatus(mask: eSTATUS_MASK) {
         return (status & mask)
     }
 
@@ -110,6 +122,21 @@ namespace LoRa {
     //% advanced=true
     export function sleep(time: number) {
         writeATCommand("SLEEP", time.toString())
+    }
+
+    //% blockId=DeviceConfigGet
+    //% block="Load Device config"
+    //% advanced=false
+    export function getDeviceConfig(){
+        setStatus(eSTATUS_MASK.OTAA, parseInt(getParameter(eRUI3_PARAM.NJM)))
+        setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
+        let confJoin = getParameter(eRUI3_PARAM.JOIN)
+        let strParam = confJoin.split(":")
+        let intParam = []
+        for(let i=0; i<strParam.length; i++){
+            intParam[i] = parseInt(strParam[i])
+        }
+        setStatus(eSTATUS_MASK.AUTOJOIN, intParam[1])
     }
 
 
