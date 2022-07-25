@@ -1,3 +1,10 @@
+/**
+ * RAK3172 LoRa Module
+ * GBS St. Gallen, 2022
+ */
+
+//% color="#00796b" icon="\uf1eb"
+
 namespace LoRa {
     let rxStack = [""]
     let eventStack = [""]
@@ -45,6 +52,9 @@ namespace LoRa {
                 if( rc == -1){
                     if (res.includes("EVT")) {
                         eventStack.push(res)
+                        if(res.includes("+EVT:JOINED")){
+                            setStatus(eSTATUS_MASK.JOINED, 1)
+                        }
                     }
                     else {
                         rxStack.push(res)
@@ -74,18 +84,20 @@ namespace LoRa {
     //% block="Get | Parameter %typ"
     //% advanced=false
     export function getParameter(typ: eRUI3_PARAM) {
-        let command = "AT+" + strRAK_PARAM[typ] + "=?"       
-        writeSerial(command)
-        basic.pause(100)
+        let command2 = "AT+" + strRAK_PARAM[typ] + "=?"       
+        basic.pause(30)
+        writeSerial(command2)
+        basic.pause(70)
         return message.replace("AT+" + strRAK_PARAM[typ] + "=", "")
     }
+
 
     //% blockId=setParameter
     //% block="Set | Parameter %typ to %value"
     //% advanced=false
     export function setParameter(typ: eRUI3_PARAM, value: string) {
-        let command = "AT+" + strRAK_PARAM[typ] + "=" + value
-        writeSerial(command)
+        let command3 = "AT+" + strRAK_PARAM[typ] + "=" + value
+        writeSerial(command3)
     }
 
     /**
@@ -133,11 +145,19 @@ namespace LoRa {
         let confJoin = getParameter(eRUI3_PARAM.JOIN)
         let strParam = confJoin.split(":")
         let intParam = []
-        for(let i=0; i<strParam.length; i++){
-            intParam[i] = parseInt(strParam[i])
+        for(let j=0; j<strParam.length; j++){
+            intParam[j] = parseInt(strParam[j])
         }
         setStatus(eSTATUS_MASK.AUTOJOIN, intParam[1])
     }
+
+    //% blockId=DeviceWatchdog
+    //% block="Watchdog"
+    //% advanced=false
+    export function watchdog() {
+        setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
+    }
+
 
 
     /**
@@ -164,9 +184,15 @@ namespace LoRa {
         writeATCommand("JOIN", join + ":" + auto_join + ":10:8")
     }
 
-    //% blockId="LoRa_Send"
-    //% block="LoRa Send | data %data on channel %chanNum"
-    export function LoRa_Send(data: string, chanNum: Channels,) {
+    //% blockId="LoRa_Send_String"
+    //% block="LoRa Send | string %data on channel %chanNum"
+    export function LoRa_SendStr(data: string, chanNum: Channels,) {
+        writeATCommand("SEND", chanNum + ":" + data)
+    }
+
+    //% blockId="LoRa_Send_Number"
+    //% block="LoRa Send | number %data on channel %chanNum"
+    export function LoRa_SendInt(data: number, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data)
     }
 }
