@@ -4,12 +4,13 @@
  */
 
 //% color="#00796b" icon="\uf1eb"
-
 namespace LoRa {
     let rxStack = [""]
     let eventStack = [""]
     export let message = ""
-
+    let bufCayenneLPP = [0]
+    bufCayenneLPP.pop()
+    
     let status = 0
     let FLAG_MSG_REQ = 0
 
@@ -72,6 +73,13 @@ namespace LoRa {
         return rxStack.pop()
     }
 
+    //% blockId=getEVTStack
+    //% block="Get EVT-Stack Item"
+    //% advanced=true
+    export function getEvtStack() {
+        return eventStack.pop()
+    }
+
     //% blockId=writeATCommand
     //% block="AT | Command %typ Paramter %value"
     //% advanced=true
@@ -83,6 +91,7 @@ namespace LoRa {
     //% blockId=getParameter
     //% block="Get | Parameter %typ"
     //% advanced=false
+    //% group="Device"
     export function getParameter(typ: eRUI3_PARAM) {
         let command2 = "AT+" + strRAK_PARAM[typ] + "=?"       
         basic.pause(30)
@@ -95,6 +104,7 @@ namespace LoRa {
     //% blockId=setParameter
     //% block="Set | Parameter %typ to %value"
     //% advanced=false
+    //% group="Device"
     export function setParameter(typ: eRUI3_PARAM, value: string) {
         let command3 = "AT+" + strRAK_PARAM[typ] + "=" + value
         writeSerial(command3)
@@ -106,6 +116,7 @@ namespace LoRa {
     //% blockId=DeviceStatusSet
     //% block="Set Device Status Bit %mask to %state"
     //% advanced=false
+    //% group="Device"
     export function setStatus(mask: eSTATUS_MASK, state: number){
         if (state){
             status = status | mask
@@ -118,13 +129,18 @@ namespace LoRa {
     //% blockId=DeviceStatusGet
     //% block="Get Device Status Bit %mask"
     //% advanced=true
-    export function getStatus(mask: eSTATUS_MASK) {
-        return (status & mask)
+    //% group="Device"
+    export function getStatus(mask: eSTATUS_MASK): boolean {
+        if (status & mask){
+            return true
+        }
+        return false
     }
 
     //% blockId=DeviceReset
     //% block="Reset LoRa Module"
     //% advanced=true
+    //% group="Device"
     export function resetModule() {
         writeSerial("ATZ")
     }
@@ -132,6 +148,7 @@ namespace LoRa {
     //% blockId=DeviceSleep
     //% block="LoRa Module sleep for %time ms"
     //% advanced=true
+    //% group="Device"
     export function sleep(time: number) {
         writeATCommand("SLEEP", time.toString())
     }
@@ -139,6 +156,7 @@ namespace LoRa {
     //% blockId=DeviceConfigGet
     //% block="Load Device config"
     //% advanced=false
+    //% group="Device"
     export function getDeviceConfig(){
         setStatus(eSTATUS_MASK.OTAA, parseInt(getParameter(eRUI3_PARAM.NJM)))
         setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
@@ -154,8 +172,12 @@ namespace LoRa {
     //% blockId=DeviceWatchdog
     //% block="Watchdog"
     //% advanced=false
+    //% group="Device"
     export function watchdog() {
-        setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
+        if(!getStatus(eSTATUS_MASK.JOINED)){
+            setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
+        }
+        
     }
 
 
@@ -166,6 +188,7 @@ namespace LoRa {
 
     //% blockId="OTAASetup"
     //% block="OTAA Setup: AppEUI %AppEUI | DevEUI %DevEUI | AppKey %AppKey"
+    //% group="Setup"
     export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string) {
         setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
         setParameter(eRUI3_PARAM.NJM, "1")              //Set activation to OTAA
@@ -180,19 +203,107 @@ namespace LoRa {
     
     //% blockId="Network_Join"
     //% block="LoRa Network Join | Join: %join | On Power-up: %auto_join"
+    //% group="Setup"
     export function LoRa_Join(join: eBool, auto_join: eBool) {
         writeATCommand("JOIN", join + ":" + auto_join + ":10:8")
     }
 
     //% blockId="LoRa_Send_String"
     //% block="LoRa Send | string %data on channel %chanNum"
+    //% group="Send"
     export function LoRa_SendStr(data: string, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data)
     }
 
     //% blockId="LoRa_Send_Number"
     //% block="LoRa Send | number %data on channel %chanNum"
+    //% group="Send"
     export function LoRa_SendInt(data: number, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data)
     }
+
+    //% blockId="LoRa_Send_Buffer"
+    //% block="LoRa Send | Buffer %data on channel %chanNum"
+    //% group="Send"
+    export function LoRa_SendBuffer(data: Buffer, chanNum: Channels,) {
+        writeATCommand("SEND", chanNum + ":" + data.toHex())
+    }
+
+    /**
+     * Payload CayenneLPP
+     */
+
+    //% blockId="CayenneLPP Buffer"
+    //% block="Get CayenneLPP Buffer"
+    //% group="Payload"
+    export function getCayenneLPPBuffer(){
+        return Buffer.fromArray(bufCayenneLPP)
+    }
+
+    //% blockId="CayenneLPP Clear Buffer"
+    //% block="Clear CayenneLPP Buffer"
+    //% group="Payload"
+    export function clearCayenneLPPBuffer() {
+        bufCayenneLPP = [0]
+        bufCayenneLPP.pop()
+    }
+
+    //% blockId="CayenneLPP Buffer Add"
+    //% block="Add %data to CayenneLPP Buffer"
+    //% group="Payload"
+    export function addCayenneLPPBuffer(data: Buffer){
+        let newData = data.toArray(NumberFormat.Int8LE)
+        for(let i=0; i<newData.length; i++){
+            bufCayenneLPP.insertAt(bufCayenneLPP.length, newData[i])
+        }     
+    }
+
+    //% blockId="CayenneLPP"
+    //% block="CayenneLPP %channel %cType %data"
+    //% group="Payload"
+    export function formatCayenne(channel: Channels, cType: eCAYENNE_TYPES, data: number) {
+        let frame = []
+        frame.push(channel & 0xff)
+        frame.push(cType & 0xff)
+        switch (cType) {
+            case eCAYENNE_TYPES.DigitalInput:
+            case eCAYENNE_TYPES.DigitalOutput:
+            case eCAYENNE_TYPES.Presence:
+                frame.push(data & 0xff)
+                break
+
+            case eCAYENNE_TYPES.AnalogInput:
+            case eCAYENNE_TYPES.AnalogOutput:
+            case eCAYENNE_TYPES.Illuminance:
+                data = data * 100
+                frame.push((data & 0xff00) >> 8)
+                frame.push(data & 0xff)
+                break
+
+            case eCAYENNE_TYPES.Temperature:
+                frame.push(parseTemperature(data))
+                break
+            case eCAYENNE_TYPES.Humidity:
+                frame.push(parseHumidity(data))
+                break
+
+            default:
+        }
+        return Buffer.fromArray(frame)
+    }
+
+    function parseTemperature(data: number): number {
+        let temp = 0
+        if (data < 0) {
+            data = -data
+            temp = temp | 0x8000
+        }
+        temp = temp | (data * 10)
+        return temp
+    }
+
+    function parseHumidity(data: number): number {
+        return (data * 2) & 0xff
+    }
+
 }

@@ -89,7 +89,7 @@ enum eRUI3_CMD {
     JOIN = "JOIN"
 }
 
-const strRAK_PARAM = [ 
+const strRAK_PARAM = [
     "DEVEUI",
     "APPEUI",
     "APPKEY",
@@ -101,7 +101,10 @@ const strRAK_PARAM = [
     "NJS",
     "CLASS",
     "BAND",
-    "JOIN"
+    "JOIN",
+    "RSSI",
+    "VER",
+    "LTIME"
 ]
 
 enum eRUI3_PARAM {
@@ -116,7 +119,10 @@ enum eRUI3_PARAM {
     NJS,
     CLASS,
     BAND,
-    JOIN
+    JOIN,
+    RSSI,
+    VERSION,
+    LTIME
 }
 
 enum eSTATUS_MASK {
@@ -129,4 +135,33 @@ enum eSTATUS_MASK {
     ABP = 0x80,
 
     ALL = 0xFF
+}
+
+enum eCAYENNE_TYPES {
+    //% block="Digital Input"    
+    DigitalInput = 0,
+    //% block="Digital Output"
+    DigitalOutput = 1,
+    //% block="Analog Input"    
+    AnalogInput = 2,
+    //% block="Analog Output"
+    AnalogOutput = 3,
+
+    //% block="Illuminance"
+    Illuminance = 101,
+    //% block="Presence"
+    Presence = 102,
+    //% block="Temperature"
+    Temperature = 103,
+    //% block="Humidity"
+    Humidity = 104,
+
+    //% block="Accelerometer"
+    Accelerometer = 113,
+    //% block="Barometer"
+    Barometer = 115,
+    //% block="Gyrometer"
+    Gyrometer = 134,
+    //% block="GPS_Location"
+    GPS_Location = 136,
 }
