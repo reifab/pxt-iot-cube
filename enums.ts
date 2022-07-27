@@ -126,8 +126,9 @@ enum eRUI3_PARAM {
 }
 
 enum eSTATUS_MASK {
-    SLEEP = 0x01,
-    READY = 0x02,
+    INIT = 0x01,
+    SLEEP = 0x02,
+    READY = 0x04,
 
     AUTOJOIN = 0x10,
     JOINED = 0x20,

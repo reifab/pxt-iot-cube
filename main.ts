@@ -8,7 +8,7 @@ namespace LoRa {
     let rxStack = [""]
     let eventStack = [""]
     export let message = ""
-    let bufCayenneLPP = [0]
+    export let bufCayenneLPP = [0]
     bufCayenneLPP.pop()
     
     let status = 0
@@ -62,6 +62,12 @@ namespace LoRa {
                         message = res
                     }
                 }
+                else if( rc == eRAK_RC.OK ){
+                    if(getStatus(eSTATUS_MASK.SLEEP)){
+                        setStatus(eSTATUS_MASK.SLEEP, 0)
+                        setStatus(eSTATUS_MASK.READY, 1)
+                    }
+                }
             }
         }
     }
@@ -93,9 +99,9 @@ namespace LoRa {
     //% advanced=false
     //% group="Device"
     export function getParameter(typ: eRUI3_PARAM) {
-        let command2 = "AT+" + strRAK_PARAM[typ] + "=?"       
+        let command = "AT+" + strRAK_PARAM[typ] + "=?"       
         basic.pause(30)
-        writeSerial(command2)
+        writeSerial(command)
         basic.pause(70)
         return message.replace("AT+" + strRAK_PARAM[typ] + "=", "")
     }
@@ -106,8 +112,8 @@ namespace LoRa {
     //% advanced=false
     //% group="Device"
     export function setParameter(typ: eRUI3_PARAM, value: string) {
-        let command3 = "AT+" + strRAK_PARAM[typ] + "=" + value
-        writeSerial(command3)
+        let command = "AT+" + strRAK_PARAM[typ] + "=" + value
+        writeSerial(command)
     }
 
     /**
@@ -115,7 +121,7 @@ namespace LoRa {
      */
     //% blockId=DeviceStatusSet
     //% block="Set Device Status Bit %mask to %state"
-    //% advanced=false
+    //% advanced=true
     //% group="Device"
     export function setStatus(mask: eSTATUS_MASK, state: number){
         if (state){
@@ -128,7 +134,7 @@ namespace LoRa {
 
     //% blockId=DeviceStatusGet
     //% block="Get Device Status Bit %mask"
-    //% advanced=true
+    //% advanced=false
     //% group="Device"
     export function getStatus(mask: eSTATUS_MASK): boolean {
         if (status & mask){
@@ -139,7 +145,7 @@ namespace LoRa {
 
     //% blockId=DeviceReset
     //% block="Reset LoRa Module"
-    //% advanced=true
+    //% advanced=false
     //% group="Device"
     export function resetModule() {
         writeSerial("ATZ")
@@ -147,10 +153,14 @@ namespace LoRa {
 
     //% blockId=DeviceSleep
     //% block="LoRa Module sleep for %time ms"
-    //% advanced=true
+    //% advanced=false
     //% group="Device"
     export function sleep(time: number) {
-        writeATCommand("SLEEP", time.toString())
+        if(!getStatus(eSTATUS_MASK.SLEEP)){
+            writeATCommand("SLEEP", time.toString())
+            setStatus(eSTATUS_MASK.SLEEP, 1)
+            setStatus(eSTATUS_MASK.READY, 0)
+        }
     }
 
     //% blockId=DeviceConfigGet
@@ -167,6 +177,8 @@ namespace LoRa {
             intParam[j] = parseInt(strParam[j])
         }
         setStatus(eSTATUS_MASK.AUTOJOIN, intParam[1])
+        setStatus(eSTATUS_MASK.INIT, 1)
+        setStatus(eSTATUS_MASK.READY, 1)
     }
 
     //% blockId=DeviceWatchdog
@@ -174,12 +186,12 @@ namespace LoRa {
     //% advanced=false
     //% group="Device"
     export function watchdog() {
-        if(!getStatus(eSTATUS_MASK.JOINED)){
-            setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
+        if(getStatus(eSTATUS_MASK.INIT)){
+            if (!getStatus(eSTATUS_MASK.JOINED)) {
+                setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
+            }
         }
-        
     }
-
 
 
     /**
@@ -252,7 +264,7 @@ namespace LoRa {
     //% block="Add %data to CayenneLPP Buffer"
     //% group="Payload"
     export function addCayenneLPPBuffer(data: Buffer){
-        let newData = data.toArray(NumberFormat.Int8LE)
+        let newData = data.toArray(NumberFormat.Int8BE)
         for(let i=0; i<newData.length; i++){
             bufCayenneLPP.insertAt(bufCayenneLPP.length, newData[i])
         }     
@@ -281,10 +293,13 @@ namespace LoRa {
                 break
 
             case eCAYENNE_TYPES.Temperature:
-                frame.push(parseTemperature(data))
+                data = parseTemperature(data)
+                frame.push((data & 0xff00) >> 8)
+                frame.push(data & 0xff)
                 break
             case eCAYENNE_TYPES.Humidity:
-                frame.push(parseHumidity(data))
+                data = parseHumidity(data)
+                frame.push(data & 0xff)
                 break
 
             default:
