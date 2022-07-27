@@ -54,6 +54,7 @@ namespace LoRa {
                     if (res.includes("EVT")) {
                         eventStack.push(res)
                         if(res.includes("+EVT:JOINED")){
+                            setStatus(eSTATUS_MASK.CONNECT, 0)
                             setStatus(eSTATUS_MASK.JOINED, 1)
                         }
                     }
@@ -144,11 +145,19 @@ namespace LoRa {
     }
 
     //% blockId=DeviceReset
-    //% block="Reset LoRa Module"
+    //% block="Reset LoRa Module | Hard-Reset %hardReset"
     //% advanced=false
     //% group="Device"
-    export function resetModule() {
-        writeSerial("ATZ")
+    export function resetModule(hardReset: boolean) {
+        if(hardReset){
+            MCP23008.pin_set(MCP_Pins.RAK_RST, Logic_LV.enable)
+            basic.pause(100)
+            MCP23008.pin_set(MCP_Pins.RAK_RST, Logic_LV.disable)
+        }
+        else {
+            writeSerial("ATZ")
+        }
+        setStatus(eSTATUS_MASK.ALL, 0)
     }
 
     //% blockId=DeviceSleep
@@ -168,6 +177,7 @@ namespace LoRa {
     //% advanced=false
     //% group="Device"
     export function getDeviceConfig(){
+        MCP23008.setupDefault()
         setStatus(eSTATUS_MASK.OTAA, parseInt(getParameter(eRUI3_PARAM.NJM)))
         setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
         let confJoin = getParameter(eRUI3_PARAM.JOIN)
@@ -179,6 +189,9 @@ namespace LoRa {
         setStatus(eSTATUS_MASK.AUTOJOIN, intParam[1])
         setStatus(eSTATUS_MASK.INIT, 1)
         setStatus(eSTATUS_MASK.READY, 1)
+        if(getStatus(eSTATUS_MASK.AUTOJOIN)){
+            setStatus(eSTATUS_MASK.CONNECT, 1)
+        }
     }
 
     //% blockId=DeviceWatchdog
@@ -190,7 +203,26 @@ namespace LoRa {
             if (!getStatus(eSTATUS_MASK.JOINED)) {
                 setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
             }
+
+            if (getStatus(eSTATUS_MASK.JOINED)) {
+                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.enable)
+            }
+            else if (getStatus(eSTATUS_MASK.CONNECT)) {
+                MCP23008.pin_toggle(MCP_Pins.RAK_LED)
+                if (getStatus(eSTATUS_MASK.JOINED)) {
+                    setStatus(eSTATUS_MASK.CONNECT, 0)
+                }
+            }
+            else {
+                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+            }
+            if (getStatus(eSTATUS_MASK.SLEEP)) {
+                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+            }
         }
+        else {
+            getDeviceConfig()
+        }  
     }
 
 
@@ -210,7 +242,7 @@ namespace LoRa {
         setParameter(eRUI3_PARAM.APPEUI, AppEUI)
         setParameter(eRUI3_PARAM.APPKEY, AppKey)
         basic.pause(300)
-        resetModule()
+        resetModule(false)
     }
     
     //% blockId="Network_Join"
@@ -218,6 +250,7 @@ namespace LoRa {
     //% group="Setup"
     export function LoRa_Join(join: eBool, auto_join: eBool) {
         writeATCommand("JOIN", join + ":" + auto_join + ":10:8")
+        setStatus(eSTATUS_MASK.CONNECT, 1)
     }
 
     //% blockId="LoRa_Send_String"
