@@ -129,6 +129,7 @@ enum eSTATUS_MASK {
     INIT = 0x01,
     SLEEP = 0x02,
     READY = 0x04,
+    CONNECT = 0x08,
 
     AUTOJOIN = 0x10,
     JOINED = 0x20,
