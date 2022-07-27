@@ -145,11 +145,19 @@ namespace LoRa {
     }
 
     //% blockId=DeviceReset
-    //% block="Reset LoRa Module"
+    //% block="Reset LoRa Module | Hard-Reset %hardReset"
     //% advanced=false
     //% group="Device"
-    export function resetModule() {
-        writeSerial("ATZ")
+    export function resetModule(hardReset: boolean) {
+        if(hardReset){
+            MCP23008.pin_set(MCP_Pins.RAK_RST, Logic_LV.enable)
+            basic.pause(100)
+            MCP23008.pin_set(MCP_Pins.RAK_RST, Logic_LV.disable)
+        }
+        else {
+            writeSerial("ATZ")
+        }
+        setStatus(eSTATUS_MASK.ALL, 0)
     }
 
     //% blockId=DeviceSleep
@@ -195,19 +203,23 @@ namespace LoRa {
             if (!getStatus(eSTATUS_MASK.JOINED)) {
                 setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
             }
-        }
-        if(getStatus(eSTATUS_MASK.JOINED)){
-            MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.enable)
-        }
-        else if(getStatus(eSTATUS_MASK.CONNECT)){
-            MCP23008.pin_toggle(MCP_Pins.RAK_LED)
-            if(getStatus(eSTATUS_MASK.JOINED)){
-                setStatus(eSTATUS_MASK.CONNECT, 0)
+
+            if (getStatus(eSTATUS_MASK.JOINED)) {
+                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.enable)
+            }
+            else if (getStatus(eSTATUS_MASK.CONNECT)) {
+                MCP23008.pin_toggle(MCP_Pins.RAK_LED)
+                if (getStatus(eSTATUS_MASK.JOINED)) {
+                    setStatus(eSTATUS_MASK.CONNECT, 0)
+                }
+            }
+            else {
+                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
             }
         }
         else {
-            MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
-        }
+            getDeviceConfig()
+        }  
     }
 
 
@@ -227,7 +239,7 @@ namespace LoRa {
         setParameter(eRUI3_PARAM.APPEUI, AppEUI)
         setParameter(eRUI3_PARAM.APPKEY, AppKey)
         basic.pause(300)
-        resetModule()
+        resetModule(false)
     }
     
     //% blockId="Network_Join"
