@@ -216,6 +216,9 @@ namespace LoRa {
             else {
                 MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
             }
+            if (getStatus(eSTATUS_MASK.SLEEP)) {
+                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+            }
         }
         else {
             getDeviceConfig()
