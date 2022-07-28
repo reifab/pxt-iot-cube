@@ -10,8 +10,31 @@ namespace CayenneLPP {
      * Payload CayenneLPP
      */
 
+    let CyBuffer = Buffer.create(32)
+    let CyIndexR = 0
+    let CyIndexW = 0
     export let bufCayenneLPP = [0]
     bufCayenneLPP.pop()
+
+    function writeBuffer(value: number){
+        CyBuffer.setUint8(CyIndexW, value)
+        CyIndexW++
+    }
+
+    function clearBuffer(){
+        CyBuffer.fill(0, 0, CyBuffer.length)
+        CyIndexW = 0
+        CyIndexR = 0
+    }
+
+    //% blockId=Cayenne_getBuffer
+    //% block="Get Buffer"
+    export function getBuffer(): Buffer{
+        let retBuf = CyBuffer.chunked(CyIndexW)[0]
+        clearBuffer()
+        return retBuf
+    }
+
 
     //% blockId="CayenneLPP Buffer"
     //% block="Get CayenneLPP Buffer"
@@ -87,5 +110,57 @@ namespace CayenneLPP {
 
     function parseHumidity(data: number): number {
         return (data * 2) & 0xff
+    }
+
+    //% blockId="CayenneLPP_DigitalInput"
+    //% block="Add Digital Input %data on Channel %channel"
+    //% group="Payload"
+    export function addDigitalInput(data: number, channel: Channels) {
+        writeBuffer(channel)
+        writeBuffer(cCayenne.DigitalInput.code)
+        writeBuffer(data & 0xff)
+    }
+
+    //% blockId="CayenneLPP_AnalogInput"
+    //% block="Add Analog Input %data on Channel %channel"
+    //% group="Payload"
+    export function addAnalogInput(data: number, channel: Channels) {
+        writeBuffer(channel)
+        writeBuffer(cCayenne.AnalogInput.code)
+        data = data * cCayenne.AnalogInput.factor
+        writeBuffer(((data >> 8) & 0xff))
+        writeBuffer(data & 0xff)
+    }
+
+    //% blockId="CayenneLPP_Temperature"
+    //% block="Add Temperature %data on Channel %channel"
+    //% group="Payload"
+    export function addTemperature(data: number, channel: Channels){
+        writeBuffer(channel)
+        writeBuffer(cCayenne.Temperature.code)
+        data = parseTemperature(data)
+        writeBuffer(((data >> 8) & 0xff))
+        writeBuffer(data & 0xff)
+    }
+
+    //% blockId="CayenneLPP_Humidity"
+    //% block="Add Humidity %data on Channel %channel"
+    //% group="Payload"
+    export function addHumidity(data: number, channel: Channels) {
+        writeBuffer(channel)
+        writeBuffer(cCayenne.Humidity.code)
+        data = parseHumidity(data)
+        writeBuffer(data & 0xff)
+    }
+
+    //% blockId="CayenneLPP_Illuminance"
+    //% block="Add Illuminance %data on Channel %channel"
+    //% group="Payload"
+    export function addIlluminance(data: number, channel: Channels) {
+        writeBuffer(channel)
+        writeBuffer(cCayenne.Illuminance.code)
+        data = data * cCayenne.Illuminance.factor
+        writeBuffer(((data >> 8) & 0xff))
+        writeBuffer(data & 0xff)
     }
 }
