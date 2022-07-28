@@ -8,11 +8,11 @@ namespace LoRa {
     let rxStack = [""]
     let eventStack = [""]
     export let message = ""
-    export let bufCayenneLPP = [0]
-    bufCayenneLPP.pop()
     
     let status = 0
+    let events = 0
     let FLAG_MSG_REQ = 0
+    let SwCounter = 0
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
     serial.setRxBufferSize(32)
@@ -54,8 +54,20 @@ namespace LoRa {
                     if (res.includes("EVT")) {
                         eventStack.push(res)
                         if(res.includes("+EVT:JOINED")){
+                            setEvent(eRAK_EVT.JOINED)
                             setStatus(eSTATUS_MASK.CONNECT, 0)
                             setStatus(eSTATUS_MASK.JOINED, 1)
+                        }
+                        if (res.includes("+EVT:JOIN_FAILED")) {
+                            setEvent(eRAK_EVT.JOIN_FAILED)
+                            setStatus(eSTATUS_MASK.CONNECT, 1)
+                            setStatus(eSTATUS_MASK.JOINED, 0)
+                        }
+                        else if(res.includes("+EVT:SEND_CONFIRMED_OK")){
+                            setEvent(eRAK_EVT.SEND_CONFIRMED_OK)
+                        }
+                        else if (res.includes("+EVT:SEND_CONFIRMED_FAILED")) {
+                            setEvent(eRAK_EVT.SEND_CONFIRMED_FAILED)
                         }
                     }
                     else {
@@ -120,6 +132,7 @@ namespace LoRa {
     /**
      * Device Control
      */
+
     //% blockId=DeviceStatusSet
     //% block="Set Device Status Bit %mask to %state"
     //% advanced=true
@@ -178,7 +191,7 @@ namespace LoRa {
     //% group="Device"
     export function getDeviceConfig(){
         MCP23008.setupDefault()
-        setStatus(eSTATUS_MASK.OTAA, parseInt(getParameter(eRUI3_PARAM.NJM)))
+        setStatus(eSTATUS_MASK.NJM, parseInt(getParameter(eRUI3_PARAM.NJM)))
         setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
         let confJoin = getParameter(eRUI3_PARAM.JOIN)
         let strParam = confJoin.split(":")
@@ -225,6 +238,24 @@ namespace LoRa {
         }  
     }
 
+    function setEvent(event: eRAK_EVT){
+        events = events | (0x01 << event)
+    }
+
+    function clearEvent(event: eRAK_EVT) {
+        events = events & (~(0x01 << event))
+    }
+
+    //% blockId="checkRAKEvent"
+    //% block="Is event %event set?"
+    //% group="Device"
+    export function checkEvent(event: eRAK_EVT): boolean{
+        if (events & (0x01 << event)){
+            clearEvent(event)
+            return true
+        }
+        return false
+    }
 
     /**
      * Procedures
@@ -241,6 +272,21 @@ namespace LoRa {
         setParameter(eRUI3_PARAM.DEVEUI, DevEUI)
         setParameter(eRUI3_PARAM.APPEUI, AppEUI)
         setParameter(eRUI3_PARAM.APPKEY, AppKey)
+        basic.pause(300)
+        resetModule(false)
+    }
+
+    //% blockId="ABPSetup"
+    //% block="ABP Setup: Device Address %DEVADDR | Application Session Key %APPSKEY | Network Session Key %NWKSKEY"
+    //% group="Setup"
+    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string) {
+        setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
+        setParameter(eRUI3_PARAM.NJM, "0")              //Set activation to ABP
+        setParameter(eRUI3_PARAM.CLASS, "A")            //Set class A
+        setParameter(eRUI3_PARAM.BAND, eBands.EU868.toString())     //Set band EU868
+        setParameter(eRUI3_PARAM.DEVADDR, DEVADDR)
+        setParameter(eRUI3_PARAM.APPSKEY, APPSKEY)
+        setParameter(eRUI3_PARAM.NWKSKEY, NWKSKEY)
         basic.pause(300)
         resetModule(false)
     }
@@ -272,86 +318,6 @@ namespace LoRa {
     //% group="Send"
     export function LoRa_SendBuffer(data: Buffer, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data.toHex())
-    }
-
-    /**
-     * Payload CayenneLPP
-     */
-
-    //% blockId="CayenneLPP Buffer"
-    //% block="Get CayenneLPP Buffer"
-    //% group="Payload"
-    export function getCayenneLPPBuffer(){
-        return Buffer.fromArray(bufCayenneLPP)
-    }
-
-    //% blockId="CayenneLPP Clear Buffer"
-    //% block="Clear CayenneLPP Buffer"
-    //% group="Payload"
-    export function clearCayenneLPPBuffer() {
-        bufCayenneLPP = [0]
-        bufCayenneLPP.pop()
-    }
-
-    //% blockId="CayenneLPP Buffer Add"
-    //% block="Add %data to CayenneLPP Buffer"
-    //% group="Payload"
-    export function addCayenneLPPBuffer(data: Buffer){
-        let newData = data.toArray(NumberFormat.Int8BE)
-        for(let i=0; i<newData.length; i++){
-            bufCayenneLPP.insertAt(bufCayenneLPP.length, newData[i])
-        }     
-    }
-
-    //% blockId="CayenneLPP"
-    //% block="CayenneLPP %channel %cType %data"
-    //% group="Payload"
-    export function formatCayenne(channel: Channels, cType: eCAYENNE_TYPES, data: number) {
-        let frame = []
-        frame.push(channel & 0xff)
-        frame.push(cType & 0xff)
-        switch (cType) {
-            case eCAYENNE_TYPES.DigitalInput:
-            case eCAYENNE_TYPES.DigitalOutput:
-            case eCAYENNE_TYPES.Presence:
-                frame.push(data & 0xff)
-                break
-
-            case eCAYENNE_TYPES.AnalogInput:
-            case eCAYENNE_TYPES.AnalogOutput:
-            case eCAYENNE_TYPES.Illuminance:
-                data = data * 100
-                frame.push((data & 0xff00) >> 8)
-                frame.push(data & 0xff)
-                break
-
-            case eCAYENNE_TYPES.Temperature:
-                data = parseTemperature(data)
-                frame.push((data & 0xff00) >> 8)
-                frame.push(data & 0xff)
-                break
-            case eCAYENNE_TYPES.Humidity:
-                data = parseHumidity(data)
-                frame.push(data & 0xff)
-                break
-
-            default:
-        }
-        return Buffer.fromArray(frame)
-    }
-
-    function parseTemperature(data: number): number {
-        let temp = 0
-        if (data < 0) {
-            data = -data
-            temp = temp | 0x8000
-        }
-        temp = temp | (data * 10)
-        return temp
-    }
-
-    function parseHumidity(data: number): number {
-        return (data * 2) & 0xff
     }
 
 }
