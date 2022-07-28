@@ -30,34 +30,18 @@ enum eCAYENNE_TYPES {
 }
 
 const cCayenne = {
-    DigitalInput: {code: 0, size: 1, factor: 1},
-    DigitalOutput: { code: 1, size: 1, factor: 1 },
-    AnalogInput: { code: 2, size: 2, factor: 0.01 },
-    AnalogOutput: { code: 3, size: 2, factor: 0.01 },
+    DigitalInput: {code: 0, size: 3, factor: 1},
+    DigitalOutput: { code: 1, size: 3, factor: 1 },
+    AnalogInput: { code: 2, size: 4, factor: 100 },
+    AnalogOutput: { code: 3, size: 4, factor: 100 },
 
-    Illuminance: { code: 101, size: 2, factor: 1 },
-    Presence: { code: 102, size: 1, factor: 1 },
-    Temperature: {code: 103, size: 2, factor: 10},
-    Humidity: {code: 104, size: 1, factor: 2},
+    Illuminance: { code: 101, size: 4, factor: 1 },
+    Presence: { code: 102, size: 3, factor: 1 },
+    Temperature: {code: 103, size: 4, factor: 10},
+    Humidity: {code: 104, size: 3, factor: 2},
 
-    Accelerometer: { code: 113, size: 6, factor: 1000},
-    Barometer: { code: 115, size: 2, factor: 10},
-
-}
-
-
-enum eCAYENNE_SIZE {
-    // Data ID + Data Type + Data Size
-    LPP_DIGITAL_INPUT_SIZE =     3,
-    LPP_DIGITAL_OUTPUT_SIZE =    3,
-    LPP_ANALOG_INPUT_SIZE =      4,
-    LPP_ANALOG_OUTPUT_SIZE =     4,
-    LPP_LUMINOSITY_SIZE =        4,
-    LPP_PRESENCE_SIZE =          3,
-    LPP_TEMPERATURE_SIZE =       4,
-    LPP_RELATIVE_HUMIDITY_SIZE =   3,
-        LPP_ACCELEROMETER_SIZE   =    8,
-    LPP_BAROMETRIC_PRESSURE_SIZE = 4,
-    LPP_GYROMETER_SIZE   =        8,
-    LPP_GPS_SIZE          =       11
+    Accelerometer: { code: 113, size: 8, factor: 1000},
+    Barometer: { code: 115, size: 4, factor: 10},
+    Gyrometer: { code: 134, size: 8, factor: 100},
+    GPS: {code: 136, size: 11, factor: 10000, factorAlt: 100}
 }
