@@ -1,12 +1,14 @@
-// Hier kann man Tests durchführen; diese Datei wird nicht kompiliert, wenn dieses Paket als Erweiterung verwendet wird.
-
-basic.showString("Test")
+/**
+ * RAK3172 LoRa Module
+ * GBS St. Gallen, 2022
+ */
 
 input.onLogoEvent(TouchButtonEvent.Pressed, function () {
     MCP23008.pin_toggle(MCP_Pins.USR_LED)
     LoRa.resetModule(false)
 })
-loops.everyInterval(2000, function () {
+basic.showString("Test")
+loops.everyInterval(1000, function () {
     LoRa.watchdog()
     if (LoRa.checkEvent(eRAK_EVT.JOINED)) {
         music.playTone(988, music.beat(BeatFraction.Eighth))
@@ -14,7 +16,9 @@ loops.everyInterval(2000, function () {
     } else if (LoRa.checkEvent(eRAK_EVT.JOIN_FAILED)) {
         basic.showIcon(IconNames.No)
     } else {
-        basic.clearScreen()
+        basic.showIcon(IconNames.Diamond)
+        basic.pause(500)
+        basic.showIcon(IconNames.SmallDiamond)
     }
 })
 loops.everyInterval(300000, function () {
@@ -27,4 +31,3 @@ loops.everyInterval(300000, function () {
 basic.forever(function () {
     LoRa.serialListener()
 })
-
