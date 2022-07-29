@@ -5,14 +5,9 @@
 
 //% color="#00796b" icon="\uf1eb"
 namespace LoRa {
-    let rxStack = [""]
-    let eventStack = [""]
-    export let message = ""
+    let message = ""
     
     let status = 0
-    let events = 0
-    let FLAG_MSG_REQ = 0
-    let SwCounter = 0
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
     serial.setRxBufferSize(32)
@@ -34,70 +29,6 @@ namespace LoRa {
     //% advanced=true
     export function getSerialMessage() {
         return message
-    }
-
-    //% blockId=SerialListener
-    //% block="Serial Listener"
-    //% advanced=false
-    //% group="Handler"
-    export function serialListener(){
-        let rc = -1
-        if (FLAG_MSG_REQ == 0) {
-            let res = serial.readUntil("\r\n")
-            if (res.length > 0) {
-                res = res.replace("\r\n", "")
-                for(let i=0; i<strRAK_RC.length; i++){
-                    if(res.includes(strRAK_RC[i])){
-                        rc = i
-                    }
-                }
-                if( rc == -1){
-                    if (res.includes("EVT")) {
-                        eventStack.push(res)
-                        if(res.includes("+EVT:JOINED")){
-                            setEvent(eRAK_EVT.JOINED)
-                            setStatus(eSTATUS_MASK.CONNECT, 0)
-                            setStatus(eSTATUS_MASK.JOINED, 1)
-                        }
-                        if (res.includes("+EVT:JOIN_FAILED")) {
-                            setEvent(eRAK_EVT.JOIN_FAILED)
-                            setStatus(eSTATUS_MASK.CONNECT, 1)
-                            setStatus(eSTATUS_MASK.JOINED, 0)
-                        }
-                        else if(res.includes("+EVT:SEND_CONFIRMED_OK")){
-                            setEvent(eRAK_EVT.SEND_CONFIRMED_OK)
-                        }
-                        else if (res.includes("+EVT:SEND_CONFIRMED_FAILED")) {
-                            setEvent(eRAK_EVT.SEND_CONFIRMED_FAILED)
-                        }
-                    }
-                    else {
-                        rxStack.push(res)
-                        message = res
-                    }
-                }
-                else if( rc == eRAK_RC.OK ){
-                    if(getStatus(eSTATUS_MASK.SLEEP)){
-                        setStatus(eSTATUS_MASK.SLEEP, 0)
-                        setStatus(eSTATUS_MASK.READY, 1)
-                    }
-                }
-            }
-        }
-    }
-
-    //% blockId=getRxStack
-    //% block="Get RX-Stack Item"
-    //% advanced=true
-    export function getRxStack(){
-        return rxStack.pop()
-    }
-
-    //% blockId=getEVTStack
-    //% block="Get EVT-Stack Item"
-    //% advanced=true
-    export function getEvtStack() {
-        return eventStack.pop()
     }
 
     //% blockId=writeATCommand
@@ -131,6 +62,109 @@ namespace LoRa {
     }
 
     /**
+     * Background Processes
+     */
+
+    //% blockId=LoRaDeviceSetup
+    //% block="Prepare LoRa Device"
+    //% advanced=true
+    //% group="Device"
+    export function runDeviceSetup() {
+        MCP23008.setup(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
+        setStatus(eSTATUS_MASK.NJM, parseInt(getParameter(eRUI3_PARAM.NJM)))
+        setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
+        let confJoin = getParameter(eRUI3_PARAM.JOIN)
+        let strParam = confJoin.split(":")
+        let intParam = []
+        for (let j = 0; j < strParam.length; j++) {
+            intParam[j] = parseInt(strParam[j])
+        }
+        setStatus(eSTATUS_MASK.AUTOJOIN, intParam[1])
+        setStatus(eSTATUS_MASK.INIT, 1)
+        setStatus(eSTATUS_MASK.READY, 1)
+        if (getStatus(eSTATUS_MASK.AUTOJOIN)) {
+            setStatus(eSTATUS_MASK.CONNECT, 1)
+        }
+    }
+
+    //% blockId=DeviceWatchdog
+    //% block="Watchdog"
+    //% advanced=false
+    //% group="Handler"
+    export function watchdog() {
+        if (getStatus(eSTATUS_MASK.INIT)) {
+            if (!getStatus(eSTATUS_MASK.JOINED)) {
+                setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
+            }
+
+            if (getStatus(eSTATUS_MASK.JOINED)) {
+                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.enable)
+            }
+            else if (getStatus(eSTATUS_MASK.CONNECT)) {
+                MCP23008.pin_toggle(MCP_Pins.RAK_LED)
+                if (getStatus(eSTATUS_MASK.JOINED)) {
+                    setStatus(eSTATUS_MASK.CONNECT, 0)
+                }
+            }
+            else {
+                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+            }
+            if (getStatus(eSTATUS_MASK.SLEEP)) {
+                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+            }
+        }
+        else {
+            runDeviceSetup()
+        }
+    }
+
+    //% blockId=SerialListener
+    //% block="Serial Listener"
+    //% advanced=false
+    //% group="Handler"
+    export function serialListener() {
+        let rc = -1
+        let res = serial.readUntil("\r\n")
+        if (res.length > 0) {
+            res = res.replace("\r\n", "")
+            for (let i = 0; i < strRAK_RC.length; i++) {
+                if (res.includes(strRAK_RC[i])) {
+                    rc = i
+                }
+            }
+            if (rc == -1) {
+                if (res.includes("EVT")) {
+                    if (res.includes("+EVT:JOINED")) {
+                        setEvent(eRAK_EVT.JOINED)
+                        setStatus(eSTATUS_MASK.CONNECT, 0)
+                        setStatus(eSTATUS_MASK.JOINED, 1)
+                    }
+                    if (res.includes("+EVT:JOIN_FAILED")) {
+                        setEvent(eRAK_EVT.JOIN_FAILED)
+                        setStatus(eSTATUS_MASK.CONNECT, 1)
+                        setStatus(eSTATUS_MASK.JOINED, 0)
+                    }
+                    else if (res.includes("+EVT:SEND_CONFIRMED_OK")) {
+                        setEvent(eRAK_EVT.SEND_CONFIRMED_OK)
+                    }
+                    else if (res.includes("+EVT:SEND_CONFIRMED_FAILED")) {
+                        setEvent(eRAK_EVT.SEND_CONFIRMED_FAILED)
+                    }
+                }
+                else {
+                    message = res
+                }
+            }
+            else if (rc == eRAK_RC.OK) {
+                if (getStatus(eSTATUS_MASK.SLEEP)) {
+                    setStatus(eSTATUS_MASK.SLEEP, 0)
+                    setStatus(eSTATUS_MASK.READY, 1)
+                }
+            }
+        }
+    }
+
+    /**
      * Device Control
      */
 
@@ -153,6 +187,25 @@ namespace LoRa {
     //% group="Device"
     export function getStatus(mask: eSTATUS_MASK): boolean {
         if (status & mask){
+            return true
+        }
+        return false
+    }
+
+    function setEvent(event: eRAK_EVT) {
+        status = status | (0x01 << (event + 8))
+    }
+
+    function clearEvent(event: eRAK_EVT) {
+        status = status & (~(0x01 << (event + 8)))
+    }
+
+    //% blockId="checkRAKEvent"
+    //% block="Is event %event set?"
+    //% group="Device"
+    export function checkEvent(event: eRAK_EVT): boolean {
+        if (status & (0x01 << (event + 8))) {
+            clearEvent(event)
             return true
         }
         return false
@@ -186,77 +239,6 @@ namespace LoRa {
         }
     }
 
-    //% blockId=DeviceConfigGet
-    //% block="Load Device config"
-    //% advanced=true
-    //% group="Device"
-    export function getDeviceConfig(){
-        MCP23008.setupDefault()
-        setStatus(eSTATUS_MASK.NJM, parseInt(getParameter(eRUI3_PARAM.NJM)))
-        setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
-        let confJoin = getParameter(eRUI3_PARAM.JOIN)
-        let strParam = confJoin.split(":")
-        let intParam = []
-        for(let j=0; j<strParam.length; j++){
-            intParam[j] = parseInt(strParam[j])
-        }
-        setStatus(eSTATUS_MASK.AUTOJOIN, intParam[1])
-        setStatus(eSTATUS_MASK.INIT, 1)
-        setStatus(eSTATUS_MASK.READY, 1)
-        if(getStatus(eSTATUS_MASK.AUTOJOIN)){
-            setStatus(eSTATUS_MASK.CONNECT, 1)
-        }
-    }
-
-    //% blockId=DeviceWatchdog
-    //% block="Watchdog"
-    //% advanced=false
-    //% group="Handler"
-    export function watchdog() {
-        if(getStatus(eSTATUS_MASK.INIT)){
-            if (!getStatus(eSTATUS_MASK.JOINED)) {
-                setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
-            }
-
-            if (getStatus(eSTATUS_MASK.JOINED)) {
-                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.enable)
-            }
-            else if (getStatus(eSTATUS_MASK.CONNECT)) {
-                MCP23008.pin_toggle(MCP_Pins.RAK_LED)
-                if (getStatus(eSTATUS_MASK.JOINED)) {
-                    setStatus(eSTATUS_MASK.CONNECT, 0)
-                }
-            }
-            else {
-                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
-            }
-            if (getStatus(eSTATUS_MASK.SLEEP)) {
-                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
-            }
-        }
-        else {
-            getDeviceConfig()
-        }  
-    }
-
-    function setEvent(event: eRAK_EVT){
-        events = events | (0x01 << event)
-    }
-
-    function clearEvent(event: eRAK_EVT) {
-        events = events & (~(0x01 << event))
-    }
-
-    //% blockId="checkRAKEvent"
-    //% block="Is event %event set?"
-    //% group="Device"
-    export function checkEvent(event: eRAK_EVT): boolean{
-        if (events & (0x01 << event)){
-            clearEvent(event)
-            return true
-        }
-        return false
-    }
 
     /**
      * Procedures

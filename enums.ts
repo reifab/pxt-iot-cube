@@ -26,9 +26,6 @@ enum eRAK_EVT {
     SEND_CONFIRMED_FAILED
 }
 
-const strRAK_EVT = ["JOIN FAILED", "JOINED", "SEND CONFIRMED OK", "SEND CONFIRMED FAILED"]
-
-
 enum eBool {
     disable,   //disable represents 0
     enable     //enable represents 1
