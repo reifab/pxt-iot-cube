@@ -7,11 +7,10 @@
 //% color="#03a9f4" icon="\uf1dd"
 namespace CayenneLPP {
     /**
-     * Payload CayenneLPP
+     * Buffer CayenneLPP
      */
 
     let CyBuffer = Buffer.create(32)
-    let CyIndexR = 0
     let CyIndexW = 0
 
 
@@ -23,7 +22,6 @@ namespace CayenneLPP {
     function clearBuffer(){
         CyBuffer.fill(0, 0, CyBuffer.length)
         CyIndexW = 0
-        CyIndexR = 0
     }
 
     //% blockId=Cayenne_getBuffer
@@ -34,57 +32,9 @@ namespace CayenneLPP {
         return retBuf
     }
 
-
-    //% blockId="CayenneLPP"
-    //% block="CayenneLPP %channel %cType %data"
-    //% group="Payload"
-    export function formatCayenne(channel: Channels, cType: eCAYENNE_TYPES, data: number) {
-        let frame = []
-        frame.push(channel & 0xff)
-        frame.push(cType & 0xff)
-        switch (cType) {
-            case eCAYENNE_TYPES.DigitalInput:
-            case eCAYENNE_TYPES.DigitalOutput:
-            case eCAYENNE_TYPES.Presence:
-                frame.push(data & 0xff)
-                break
-
-            case eCAYENNE_TYPES.AnalogInput:
-            case eCAYENNE_TYPES.AnalogOutput:
-            case eCAYENNE_TYPES.Illuminance:
-                data = data * 100
-                frame.push((data & 0xff00) >> 8)
-                frame.push(data & 0xff)
-                break
-
-            case eCAYENNE_TYPES.Temperature:
-                data = parseTemperature(data)
-                frame.push((data & 0xff00) >> 8)
-                frame.push(data & 0xff)
-                break
-            case eCAYENNE_TYPES.Humidity:
-                data = parseHumidity(data)
-                frame.push(data & 0xff)
-                break
-
-            default:
-        }
-        return Buffer.fromArray(frame)
-    }
-
-    function parseTemperature(data: number): number {
-        let temp = 0
-        if (data < 0) {
-            data = -data
-            temp = temp | 0x8000
-        }
-        temp = temp | (data * 10)
-        return temp
-    }
-
-    function parseHumidity(data: number): number {
-        return (data * 2) & 0xff
-    }
+    /**
+     * Payload CayenneLPP
+     */
 
     //% blockId="CayenneLPP_DigitalInput"
     //% block="Add Digital Input %data on Channel %channel"
@@ -130,11 +80,16 @@ namespace CayenneLPP {
     //% block="Add Temperature %data on Channel %channel"
     //% group="Payload"
     export function addTemperature(data: number, channel: Channels){
+        let temp = 0
+        if (data < 0) {
+            data = -data
+            temp = temp | 0x8000
+        }
+        temp = temp | (data * 10)
         writeBuffer(channel)
         writeBuffer(cCayenne.Temperature.code)
-        data = parseTemperature(data)
-        writeBuffer(data >> 8)
-        writeBuffer(data)
+        writeBuffer(temp >> 8)
+        writeBuffer(temp)
     }
 
     //% blockId="CayenneLPP_Humidity"
@@ -143,7 +98,7 @@ namespace CayenneLPP {
     export function addHumidity(data: number, channel: Channels) {
         writeBuffer(channel)
         writeBuffer(cCayenne.Humidity.code)
-        data = parseHumidity(data)
+        data = (data * cCayenne.Humidity.factor)
         writeBuffer(data)
     }
 

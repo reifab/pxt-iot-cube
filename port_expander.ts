@@ -91,6 +91,4 @@ namespace MCP23008 {
         i2c_write(MCP_Regs.OLAT, active ^ pin)
         regGPIO = active ^ pin
     }
-
-
 }
