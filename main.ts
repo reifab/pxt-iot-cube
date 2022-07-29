@@ -38,7 +38,8 @@ namespace LoRa {
 
     //% blockId=SerialListener
     //% block="Serial Listener"
-    //% advanced=true
+    //% advanced=false
+    //% group="Handler"
     export function serialListener(){
         let rc = -1
         if (FLAG_MSG_REQ == 0) {
@@ -109,7 +110,7 @@ namespace LoRa {
 
     //% blockId=getParameter
     //% block="Get | Parameter %typ"
-    //% advanced=false
+    //% advanced=true
     //% group="Device"
     export function getParameter(typ: eRUI3_PARAM) {
         let command = "AT+" + strRAK_PARAM[typ] + "=?"       
@@ -122,7 +123,7 @@ namespace LoRa {
 
     //% blockId=setParameter
     //% block="Set | Parameter %typ to %value"
-    //% advanced=false
+    //% advanced=true
     //% group="Device"
     export function setParameter(typ: eRUI3_PARAM, value: string) {
         let command = "AT+" + strRAK_PARAM[typ] + "=" + value
@@ -187,7 +188,7 @@ namespace LoRa {
 
     //% blockId=DeviceConfigGet
     //% block="Load Device config"
-    //% advanced=false
+    //% advanced=true
     //% group="Device"
     export function getDeviceConfig(){
         MCP23008.setupDefault()
@@ -210,7 +211,7 @@ namespace LoRa {
     //% blockId=DeviceWatchdog
     //% block="Watchdog"
     //% advanced=false
-    //% group="Device"
+    //% group="Handler"
     export function watchdog() {
         if(getStatus(eSTATUS_MASK.INIT)){
             if (!getStatus(eSTATUS_MASK.JOINED)) {
