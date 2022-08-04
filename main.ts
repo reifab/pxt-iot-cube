@@ -3,6 +3,17 @@
  * GBS St. Gallen, 2022
  */
 
+/**
+ * Loops for background tasks
+ */
+basic.forever(function() {
+    LoRa.serialListener()
+})
+
+loops.everyInterval(1000, function() {
+    LoRa.watchdog()
+})
+
 //% color="#00796b" icon="\uf1eb"
 namespace LoRa {
     let message = ""
