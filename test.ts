@@ -9,7 +9,6 @@ input.onLogoEvent(TouchButtonEvent.Pressed, function () {
 })
 basic.showString("Test")
 loops.everyInterval(1000, function () {
-    LoRa.watchdog()
     if (LoRa.checkEvent(eRAK_EVT.JOINED)) {
         music.playTone(988, music.beat(BeatFraction.Eighth))
         basic.showIcon(IconNames.Yes)
@@ -27,7 +26,4 @@ loops.everyInterval(300000, function () {
         CayenneLPP.addTemperature(input.temperature(), Channels.One)
         LoRa.LoRa_SendBuffer(CayenneLPP.getBuffer(), Channels.One)
     }
-})
-basic.forever(function () {
-    LoRa.serialListener()
 })
