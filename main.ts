@@ -17,7 +17,6 @@ loops.everyInterval(1000, function() {
 //% color="#00796b" icon="\uf1eb"
 namespace LoRa {
     let message = ""
-    
     let status = 0
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
@@ -87,7 +86,7 @@ namespace LoRa {
         let confJoin = getParameter(eRUI3_PARAM.JOIN)
         let strParam = confJoin.split(":")
         let intParam = []
-        for (let j = 0; j < strParam.length; j++) {
+            for (let j = 0; j < strParam.length; j++) {
             intParam[j] = parseInt(strParam[j])
         }
         setStatus(eSTATUS_MASK.AUTOJOIN, intParam[1])
@@ -104,24 +103,26 @@ namespace LoRa {
     //% group="Handler"
     export function watchdog() {
         if (getStatus(eSTATUS_MASK.INIT)) {
-            if (!getStatus(eSTATUS_MASK.JOINED)) {
-                setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
-            }
-
-            if (getStatus(eSTATUS_MASK.JOINED)) {
-                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.enable)
-            }
-            else if (getStatus(eSTATUS_MASK.CONNECT)) {
-                MCP23008.pin_toggle(MCP_Pins.RAK_LED)
-                if (getStatus(eSTATUS_MASK.JOINED)) {
-                    setStatus(eSTATUS_MASK.CONNECT, 0)
+            if(!getStatus(eSTATUS_MASK.SETUP)){
+                if (!getStatus(eSTATUS_MASK.JOINED)) {
+                    setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
                 }
-            }
-            else {
-                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
-            }
-            if (getStatus(eSTATUS_MASK.SLEEP)) {
-                MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+
+                if (getStatus(eSTATUS_MASK.JOINED)) {
+                    MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.enable)
+                }
+                else if (getStatus(eSTATUS_MASK.CONNECT)) {
+                    MCP23008.pin_toggle(MCP_Pins.RAK_LED)
+                    if (getStatus(eSTATUS_MASK.JOINED)) {
+                        setStatus(eSTATUS_MASK.CONNECT, 0)
+                    }
+                }
+                else {
+                    MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+                }
+                if (getStatus(eSTATUS_MASK.SLEEP)) {
+                    MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+                }
             }
         }
         else {
@@ -259,30 +260,46 @@ namespace LoRa {
     //% block="OTAA Setup: AppEUI %AppEUI | DevEUI %DevEUI | AppKey %AppKey"
     //% group="Setup"
     export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string) {
+        setStatus(eSTATUS_MASK.SETUP, 1)
         setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
+        basic.pause(50)
         setParameter(eRUI3_PARAM.NJM, "1")              //Set activation to OTAA
+        basic.pause(50)
         setParameter(eRUI3_PARAM.CLASS, "A")            //Set class A
+        basic.pause(50)
         setParameter(eRUI3_PARAM.BAND, eBands.EU868.toString())     //Set band EU868
+        basic.pause(50)
         setParameter(eRUI3_PARAM.DEVEUI, DevEUI)
+        basic.pause(50)
         setParameter(eRUI3_PARAM.APPEUI, AppEUI)
+        basic.pause(50)
         setParameter(eRUI3_PARAM.APPKEY, AppKey)
         basic.pause(300)
         resetModule(false)
+        setStatus(eSTATUS_MASK.SETUP, 0)
     }
 
     //% blockId="ABPSetup"
     //% block="ABP Setup: Device Address %DEVADDR | Application Session Key %APPSKEY | Network Session Key %NWKSKEY"
     //% group="Setup"
     export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string) {
+        setStatus(eSTATUS_MASK.SETUP, 1)
         setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
+        basic.pause(50)
         setParameter(eRUI3_PARAM.NJM, "0")              //Set activation to ABP
+        basic.pause(50)
         setParameter(eRUI3_PARAM.CLASS, "A")            //Set class A
+        basic.pause(50)
         setParameter(eRUI3_PARAM.BAND, eBands.EU868.toString())     //Set band EU868
+        basic.pause(50)
         setParameter(eRUI3_PARAM.DEVADDR, DEVADDR)
+        basic.pause(50)
         setParameter(eRUI3_PARAM.APPSKEY, APPSKEY)
+        basic.pause(50)
         setParameter(eRUI3_PARAM.NWKSKEY, NWKSKEY)
         basic.pause(300)
         resetModule(false)
+        setStatus(eSTATUS_MASK.SETUP, 0)
     }
     
     //% blockId="Network_Join"
