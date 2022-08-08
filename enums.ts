@@ -22,8 +22,8 @@ const strRAK_RC = [
 enum eRAK_EVT {
     JOIN_FAILED,
     JOINED,
-    SEND_CONFIRMED_OK,
-    SEND_CONFIRMED_FAILED
+    SEND_CONFIRMED_FAILED,
+    SEND_CONFIRMED_OK
 }
 
 enum eBool {
