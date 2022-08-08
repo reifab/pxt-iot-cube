@@ -224,7 +224,7 @@ namespace LoRa {
     }
 
     //% blockId=DeviceReset
-    //% block="Reset LoRa Module | Hard-Reset %hardReset"
+    //% block="Reset LoRa: | Hard-Reset %hardReset"
     //% advanced=false
     //% group="Device"
     export function resetModule(hardReset: boolean) {
@@ -240,7 +240,7 @@ namespace LoRa {
     }
 
     //% blockId=DeviceSleep
-    //% block="LoRa Module sleep for %time ms"
+    //% block="LoRa sleep for %time ms"
     //% time.shadow=timePicker
     //% advanced=false
     //% group="Device"
@@ -314,24 +314,14 @@ namespace LoRa {
     //% blockId="LoRa_Send_String"
     //% block="LoRa Send | string %data on channel %chanNum"
     //% group="Send"
-    //% weight=100
-    //% text.shadowOptions.toString=true
+    //% data.shadowOptions.toString=true
     export function LoRa_SendStr(data: string, chanNum: Channels,) {
-        writeATCommand("SEND", chanNum + ":" + data)
-    }
-
-    //% blockId="LoRa_Send_Number"
-    //% block="LoRa Send | number %data on channel %chanNum"
-    //% group="Send"
-    //% weight=100
-    export function LoRa_SendInt(data: number, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data)
     }
 
     //% blockId="LoRa_Send_Buffer"
     //% block="LoRa Send | Buffer %data on channel %chanNum"
     //% group="Send"
-    //% weight=110
     export function LoRa_SendBuffer(data: Buffer, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data.toHex())
     }
