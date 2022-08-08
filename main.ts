@@ -10,7 +10,7 @@ basic.forever(function() {
     LoRa.serialListener()
 })
 
-loops.everyInterval(1000, function() {
+loops.everyInterval(1500, function() {
     LoRa.watchdog()
 })
 
@@ -99,7 +99,7 @@ namespace LoRa {
 
     //% blockId=DeviceWatchdog
     //% block="Watchdog"
-    //% advanced=false
+    //% advanced=true
     //% group="Handler"
     export function watchdog() {
         if (getStatus(eSTATUS_MASK.INIT)) {
@@ -132,7 +132,7 @@ namespace LoRa {
 
     //% blockId=SerialListener
     //% block="Serial Listener"
-    //% advanced=false
+    //% advanced=true
     //% group="Handler"
     export function serialListener() {
         let rc = -1
@@ -241,6 +241,7 @@ namespace LoRa {
 
     //% blockId=DeviceSleep
     //% block="LoRa Module sleep for %time ms"
+    //% time.shadow=timePicker
     //% advanced=false
     //% group="Device"
     export function sleep(time: number) {
@@ -257,7 +258,7 @@ namespace LoRa {
      */
 
     //% blockId="OTAASetup"
-    //% block="OTAA Setup: AppEUI %AppEUI | DevEUI %DevEUI | AppKey %AppKey"
+    //% block="OTAA Setup | AppEUI %AppEUI | DevEUI %DevEUI | AppKey %AppKey"
     //% group="Setup"
     export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string) {
         setStatus(eSTATUS_MASK.SETUP, 1)
@@ -280,7 +281,7 @@ namespace LoRa {
     }
 
     //% blockId="ABPSetup"
-    //% block="ABP Setup: Device Address %DEVADDR | Application Session Key %APPSKEY | Network Session Key %NWKSKEY"
+    //% block="ABP Setup | Device Address %DEVADDR | Application Session Key %APPSKEY | Network Session Key %NWKSKEY"
     //% group="Setup"
     export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string) {
         setStatus(eSTATUS_MASK.SETUP, 1)
@@ -313,6 +314,8 @@ namespace LoRa {
     //% blockId="LoRa_Send_String"
     //% block="LoRa Send | string %data on channel %chanNum"
     //% group="Send"
+    //% weight=100
+    //% text.shadowOptions.toString=true
     export function LoRa_SendStr(data: string, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data)
     }
@@ -320,6 +323,7 @@ namespace LoRa {
     //% blockId="LoRa_Send_Number"
     //% block="LoRa Send | number %data on channel %chanNum"
     //% group="Send"
+    //% weight=100
     export function LoRa_SendInt(data: number, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data)
     }
@@ -327,6 +331,7 @@ namespace LoRa {
     //% blockId="LoRa_Send_Buffer"
     //% block="LoRa Send | Buffer %data on channel %chanNum"
     //% group="Send"
+    //% weight=110
     export function LoRa_SendBuffer(data: Buffer, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data.toHex())
     }
