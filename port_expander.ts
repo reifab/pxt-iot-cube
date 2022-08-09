@@ -65,12 +65,13 @@ namespace MCP23008 {
 
     //% blockId="MCP_Pin_Set"
     //% block="MCP set pin %pin to %value"
+    //% value.shadow="toggleOnOff"
     //% advanced=false
     //% group="Control"
-    export function pin_set(pin: MCP_Pins, value: Logic_LV) {
+    export function pin_set(pin: MCP_Pins, value: boolean) {
         //let active = i2c_read(MCP_Regs.GPIO)
         let newValue = 0
-        if (value == Logic_LV.enable) {
+        if (value == true) {
             newValue = regGPIO & (~pin)
         }
         else {

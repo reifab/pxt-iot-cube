@@ -109,7 +109,7 @@ namespace LoRa {
                 }
 
                 if (getStatus(eSTATUS_MASK.JOINED)) {
-                    MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.enable)
+                    MCP23008.pin_set(MCP_Pins.RAK_LED, true)
                 }
                 else if (getStatus(eSTATUS_MASK.CONNECT)) {
                     MCP23008.pin_toggle(MCP_Pins.RAK_LED)
@@ -118,10 +118,10 @@ namespace LoRa {
                     }
                 }
                 else {
-                    MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+                    MCP23008.pin_set(MCP_Pins.RAK_LED, false)
                 }
                 if (getStatus(eSTATUS_MASK.SLEEP)) {
-                    MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+                    MCP23008.pin_set(MCP_Pins.RAK_LED, false)
                 }
             }
         }
@@ -224,14 +224,16 @@ namespace LoRa {
     }
 
     //% blockId=DeviceReset
-    //% block="Reset LoRa: | Hard-Reset %hardReset"
+    //% block="Reset LoRa || Hard-Reset %hardReset"
+    //% hardReset.shadow="toggleOnOff"
+    //% hardReset.defl=false
     //% advanced=false
     //% group="Device"
-    export function resetModule(hardReset: boolean) {
+    export function resetModule(hardReset?: boolean) {
         if(hardReset){
-            MCP23008.pin_set(MCP_Pins.RAK_RST, Logic_LV.enable)
+            MCP23008.pin_set(MCP_Pins.RAK_RST, true)
             basic.pause(100)
-            MCP23008.pin_set(MCP_Pins.RAK_RST, Logic_LV.disable)
+            MCP23008.pin_set(MCP_Pins.RAK_RST, false)
         }
         else {
             writeSerial("ATZ")
