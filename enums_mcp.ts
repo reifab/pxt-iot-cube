@@ -6,11 +6,6 @@ enum MCP_Defaults {
     GPIO = 0xff,
 }
 
-enum Logic_LV {
-    enable = 0,
-    disable = 1
-}
-
 enum MCP_Regs {
     IODIR = 0x00,
     GPPU = 0x06,

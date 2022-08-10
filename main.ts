@@ -10,7 +10,7 @@ basic.forever(function() {
     LoRa.serialListener()
 })
 
-loops.everyInterval(1000, function() {
+loops.everyInterval(1500, function() {
     LoRa.watchdog()
 })
 
@@ -99,7 +99,7 @@ namespace LoRa {
 
     //% blockId=DeviceWatchdog
     //% block="Watchdog"
-    //% advanced=false
+    //% advanced=true
     //% group="Handler"
     export function watchdog() {
         if (getStatus(eSTATUS_MASK.INIT)) {
@@ -109,7 +109,7 @@ namespace LoRa {
                 }
 
                 if (getStatus(eSTATUS_MASK.JOINED)) {
-                    MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.enable)
+                    MCP23008.pin_set(MCP_Pins.RAK_LED, true)
                 }
                 else if (getStatus(eSTATUS_MASK.CONNECT)) {
                     MCP23008.pin_toggle(MCP_Pins.RAK_LED)
@@ -118,10 +118,10 @@ namespace LoRa {
                     }
                 }
                 else {
-                    MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+                    MCP23008.pin_set(MCP_Pins.RAK_LED, false)
                 }
                 if (getStatus(eSTATUS_MASK.SLEEP)) {
-                    MCP23008.pin_set(MCP_Pins.RAK_LED, Logic_LV.disable)
+                    MCP23008.pin_set(MCP_Pins.RAK_LED, false)
                 }
             }
         }
@@ -132,7 +132,7 @@ namespace LoRa {
 
     //% blockId=SerialListener
     //% block="Serial Listener"
-    //% advanced=false
+    //% advanced=true
     //% group="Handler"
     export function serialListener() {
         let rc = -1
@@ -224,14 +224,16 @@ namespace LoRa {
     }
 
     //% blockId=DeviceReset
-    //% block="Reset LoRa Module | Hard-Reset %hardReset"
+    //% block="Reset LoRa || Hard-Reset %hardReset"
+    //% hardReset.shadow="toggleOnOff"
+    //% hardReset.defl=false
     //% advanced=false
     //% group="Device"
-    export function resetModule(hardReset: boolean) {
+    export function resetModule(hardReset?: boolean) {
         if(hardReset){
-            MCP23008.pin_set(MCP_Pins.RAK_RST, Logic_LV.enable)
+            MCP23008.pin_set(MCP_Pins.RAK_RST, true)
             basic.pause(100)
-            MCP23008.pin_set(MCP_Pins.RAK_RST, Logic_LV.disable)
+            MCP23008.pin_set(MCP_Pins.RAK_RST, false)
         }
         else {
             writeSerial("ATZ")
@@ -240,7 +242,8 @@ namespace LoRa {
     }
 
     //% blockId=DeviceSleep
-    //% block="LoRa Module sleep for %time ms"
+    //% block="LoRa sleep for %time ms"
+    //% time.shadow=timePicker
     //% advanced=false
     //% group="Device"
     export function sleep(time: number) {
@@ -257,7 +260,7 @@ namespace LoRa {
      */
 
     //% blockId="OTAASetup"
-    //% block="OTAA Setup: AppEUI %AppEUI | DevEUI %DevEUI | AppKey %AppKey"
+    //% block="OTAA Setup | AppEUI %AppEUI | DevEUI %DevEUI | AppKey %AppKey"
     //% group="Setup"
     export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string) {
         setStatus(eSTATUS_MASK.SETUP, 1)
@@ -280,7 +283,7 @@ namespace LoRa {
     }
 
     //% blockId="ABPSetup"
-    //% block="ABP Setup: Device Address %DEVADDR | Application Session Key %APPSKEY | Network Session Key %NWKSKEY"
+    //% block="ABP Setup | Device Address %DEVADDR | Application Session Key %APPSKEY | Network Session Key %NWKSKEY"
     //% group="Setup"
     export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string) {
         setStatus(eSTATUS_MASK.SETUP, 1)
@@ -313,14 +316,8 @@ namespace LoRa {
     //% blockId="LoRa_Send_String"
     //% block="LoRa Send | string %data on channel %chanNum"
     //% group="Send"
+    //% data.shadowOptions.toString=true
     export function LoRa_SendStr(data: string, chanNum: Channels,) {
-        writeATCommand("SEND", chanNum + ":" + data)
-    }
-
-    //% blockId="LoRa_Send_Number"
-    //% block="LoRa Send | number %data on channel %chanNum"
-    //% group="Send"
-    export function LoRa_SendInt(data: number, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data)
     }
 

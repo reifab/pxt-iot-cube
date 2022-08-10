@@ -1,6 +1,6 @@
 {
     "name": "LoRa-AT-Interface",
-    "description": "",
+    "description": "Communication with LoRa module",
     "dependencies": {
         "core": "*",
         "radio": "*",
@@ -25,5 +25,8 @@
     "supportedTargets": [
         "microbit"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "tsprj",
+    "disablesVariants": [
+        "mbdal"
+    ]
 }
