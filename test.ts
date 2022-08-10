@@ -22,8 +22,8 @@ loops.everyInterval(1000, function () {
 })
 loops.everyInterval(300000, function () {
     if (IoTCube.getStatus(eSTATUS_MASK.JOINED)) {
-        CayenneLPP.addAnalogInput(pins.analogReadPin(AnalogPin.P1), Channels.One)
-        CayenneLPP.addTemperature(input.temperature(), Channels.One)
-        IoTCube.SendBuffer(CayenneLPP.getBuffer(), Channels.One)
+        IoTCube.addAnalogInput(pins.analogReadPin(AnalogPin.P1), Channels.One)
+        IoTCube.addTemperature(input.temperature(), Channels.One)
+        IoTCube.SendBuffer(IoTCube.getCayenneBuffer(), Channels.One)
     }
 })
