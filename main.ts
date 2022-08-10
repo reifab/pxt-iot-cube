@@ -19,9 +19,11 @@ loops.everyInterval(1500, function() {
 })
 
 //% color="#00796b" icon="\uf1eb"
+//% groups=["Send", "Device", "Setup"]
 namespace IoTCube {
-    let message = ""
-    let status = 0
+    let message: string= ""
+    let evtMessage: string = ""
+    let status: number = 0
     export let MCP23008 = new MCP(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
@@ -166,6 +168,12 @@ namespace IoTCube {
                     }
                     else if (res.includes("+EVT:SEND_CONFIRMED_FAILED")) {
                         setEvent(eRAK_EVT.SEND_CONFIRMED_FAILED)
+                    }
+                    else if (res.includes("+EVT:RX_1")) {
+                        setEvent(eRAK_EVT.RX_1)
+                    }
+                    else if (res.includes("+EVT:RX_2")) {
+                        setEvent(eRAK_EVT.RX_2)
                     }
                 }
                 else {
@@ -322,17 +330,17 @@ namespace IoTCube {
     }
 
     //% blockId="LoRa_Send_String"
-    //% block="LoRa Send | string %data on channel %chanNum"
+    //% block="Send | string %data on channel %chanNum"
     //% group="Send"
     //% data.shadowOptions.toString=true
-    export function LoRa_SendStr(data: string, chanNum: Channels,) {
+    export function SendStr(data: string, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data)
     }
 
     //% blockId="LoRa_Send_Buffer"
-    //% block="LoRa Send | Buffer %data on channel %chanNum"
+    //% block="Send | Buffer %data on channel %chanNum"
     //% group="Send"
-    export function LoRa_SendBuffer(data: Buffer, chanNum: Channels,) {
+    export function SendBuffer(data: Buffer, chanNum: Channels,) {
         writeATCommand("SEND", chanNum + ":" + data.toHex())
     }
 
