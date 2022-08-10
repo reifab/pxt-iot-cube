@@ -1,23 +1,28 @@
 /**
- * RAK3172 LoRa Module
- * GBS St. Gallen, 2022
- */
+* IoT-Wuerfel
+* GBS St. Gallen, 2022
+*
+* Main IoTCube
+* This file defines the namespace "IoTCube" and impelemts all LoRa functions.
+* Other classes of the namespace are accessed from here aswell.
+*/
 
 /**
  * Loops for background tasks
  */
 basic.forever(function() {
-    LoRa.serialListener()
+    IoTCube.serialListener()
 })
 
 loops.everyInterval(1500, function() {
-    LoRa.watchdog()
+    IoTCube.watchdog()
 })
 
 //% color="#00796b" icon="\uf1eb"
-namespace LoRa {
+namespace IoTCube {
     let message = ""
     let status = 0
+    export let MCP23008 = new MCP(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
     serial.setRxBufferSize(32)
@@ -80,7 +85,7 @@ namespace LoRa {
     //% advanced=true
     //% group="Device"
     export function runDeviceSetup() {
-        MCP23008.setup(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
+        //MCP23008.setup(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
         setStatus(eSTATUS_MASK.NJM, parseInt(getParameter(eRUI3_PARAM.NJM)))
         setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
         let confJoin = getParameter(eRUI3_PARAM.JOIN)
@@ -109,19 +114,19 @@ namespace LoRa {
                 }
 
                 if (getStatus(eSTATUS_MASK.JOINED)) {
-                    MCP23008.pin_set(MCP_Pins.RAK_LED, true)
+                    MCP23008.setPin(MCP_Pins.RAK_LED, true)
                 }
                 else if (getStatus(eSTATUS_MASK.CONNECT)) {
-                    MCP23008.pin_toggle(MCP_Pins.RAK_LED)
+                    MCP23008.togglePin(MCP_Pins.RAK_LED)
                     if (getStatus(eSTATUS_MASK.JOINED)) {
                         setStatus(eSTATUS_MASK.CONNECT, 0)
                     }
                 }
                 else {
-                    MCP23008.pin_set(MCP_Pins.RAK_LED, false)
+                    MCP23008.setPin(MCP_Pins.RAK_LED, false)
                 }
                 if (getStatus(eSTATUS_MASK.SLEEP)) {
-                    MCP23008.pin_set(MCP_Pins.RAK_LED, false)
+                    MCP23008.setPin(MCP_Pins.RAK_LED, false)
                 }
             }
         }
@@ -231,9 +236,9 @@ namespace LoRa {
     //% group="Device"
     export function resetModule(hardReset?: boolean) {
         if(hardReset){
-            MCP23008.pin_set(MCP_Pins.RAK_RST, true)
+            MCP23008.setPin(MCP_Pins.RAK_RST, true)
             basic.pause(100)
-            MCP23008.pin_set(MCP_Pins.RAK_RST, false)
+            MCP23008.setPin(MCP_Pins.RAK_RST, false)
         }
         else {
             writeSerial("ATZ")
