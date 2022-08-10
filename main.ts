@@ -260,17 +260,18 @@ namespace LoRa {
      */
 
     //% blockId="OTAASetup"
-    //% block="OTAA Setup | AppEUI %AppEUI | DevEUI %DevEUI | AppKey %AppKey"
+    //% block="OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzy Band %Band Class %devClass"
+    //% devClass.defl="A"
     //% group="Setup"
-    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string) {
+    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string, Band: eBands=4, devClass: string = "A") {
         setStatus(eSTATUS_MASK.SETUP, 1)
         setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
         basic.pause(50)
         setParameter(eRUI3_PARAM.NJM, "1")              //Set activation to OTAA
         basic.pause(50)
-        setParameter(eRUI3_PARAM.CLASS, "A")            //Set class A
+        setParameter(eRUI3_PARAM.CLASS, devClass)       //Set class
         basic.pause(50)
-        setParameter(eRUI3_PARAM.BAND, eBands.EU868.toString())     //Set band EU868
+        setParameter(eRUI3_PARAM.BAND, Band.toString()) 
         basic.pause(50)
         setParameter(eRUI3_PARAM.DEVEUI, DevEUI)
         basic.pause(50)
@@ -278,22 +279,23 @@ namespace LoRa {
         basic.pause(50)
         setParameter(eRUI3_PARAM.APPKEY, AppKey)
         basic.pause(300)
-        resetModule(false)
+        resetModule()
         setStatus(eSTATUS_MASK.SETUP, 0)
     }
 
     //% blockId="ABPSetup"
-    //% block="ABP Setup | Device Address %DEVADDR | Application Session Key %APPSKEY | Network Session Key %NWKSKEY"
+    //% block="ABP Setup | Device Address %DEVADDR Application Session Key %APPSKEY Network Session Key %NWKSKEY Frequenzy Band %Band Class %devClass"
+    //% devClass.defl="A"
     //% group="Setup"
-    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string) {
+    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string, Band: eBands=4, devClass: string="A") {
         setStatus(eSTATUS_MASK.SETUP, 1)
         setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
         basic.pause(50)
         setParameter(eRUI3_PARAM.NJM, "0")              //Set activation to ABP
         basic.pause(50)
-        setParameter(eRUI3_PARAM.CLASS, "A")            //Set class A
+        setParameter(eRUI3_PARAM.CLASS, devClass)       //Set class
         basic.pause(50)
-        setParameter(eRUI3_PARAM.BAND, eBands.EU868.toString())     //Set band EU868
+        setParameter(eRUI3_PARAM.BAND, Band.toString())
         basic.pause(50)
         setParameter(eRUI3_PARAM.DEVADDR, DEVADDR)
         basic.pause(50)
@@ -301,15 +303,16 @@ namespace LoRa {
         basic.pause(50)
         setParameter(eRUI3_PARAM.NWKSKEY, NWKSKEY)
         basic.pause(300)
-        resetModule(false)
+        resetModule()
         setStatus(eSTATUS_MASK.SETUP, 0)
     }
     
     //% blockId="Network_Join"
-    //% block="LoRa Network Join | Join: %join | On Power-up: %auto_join"
+    //% block="LoRa Network Join | Join %join On Power-up %auto_join Reattempt interval %interval attempts %attempts"
+    //% interval.defl=10, attempts.defl=8
     //% group="Setup"
-    export function LoRa_Join(join: eBool, auto_join: eBool) {
-        writeATCommand("JOIN", join + ":" + auto_join + ":10:8")
+    export function LoRa_Join(join: eBool = eBool.enable, auto_join: eBool = eBool.enable, interval?: number, attempts?: number) {
+        writeATCommand("JOIN", join + ":" + auto_join + ":" + interval + ":" + attempts )
         setStatus(eSTATUS_MASK.CONNECT, 1)
     }
 
