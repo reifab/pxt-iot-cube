@@ -23,7 +23,9 @@ enum eRAK_EVT {
     JOIN_FAILED,
     JOINED,
     SEND_CONFIRMED_FAILED,
-    SEND_CONFIRMED_OK
+    SEND_CONFIRMED_OK,
+    RX_1,
+    RX_2
 }
 
 enum eBool {
@@ -107,7 +109,9 @@ const strRAK_PARAM = [
     "JOIN",
     "RSSI",
     "VER",
-    "LTIME"
+    "LTIME",
+    "RX1DL",
+    "RX2DL"
 ]
 
 enum eRUI3_PARAM {
@@ -125,7 +129,9 @@ enum eRUI3_PARAM {
     JOIN,
     RSSI,
     VERSION,
-    LTIME
+    LTIME,
+    RX1DL,
+    RX2DL
 }
 
 enum eSTATUS_MASK {
