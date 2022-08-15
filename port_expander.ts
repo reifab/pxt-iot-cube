@@ -95,24 +95,21 @@ namespace IoTCube {
     //% blockId="MCP_Pin_Set"
     //% block="Set pin %pin to %value"
     //% value.shadow="toggleOnOff"
-    //% subcategory="Port Expander"
-    //% group="Control"
+    //% group="Pins"
     export function setPin(pin: MCP_Pins, value: boolean){
         MCP23008.setPin(pin, value)
     }
 
     //% blockId="MCP_Pin_Get"
     //% block="Read pin %pin"
-    //% subcategory="Port Expander"
-    //% group="Control"
+    //% group="Pins"
     export function getPin(pin: MCP_Pins) {
         return MCP23008.getPin(pin)
     }
 
     //% blockId="MCP_Pin_Toggle"
     //% block="Toggle pin %pin"
-    //% subcategory="Port Expander"
-    //% group="Control"
+    //% group="Pins"
     export function togglePin(pin: MCP_Pins) {
         MCP23008.togglePin(pin)
     }

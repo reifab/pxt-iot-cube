@@ -4,8 +4,8 @@
  */
 
 input.onLogoEvent(TouchButtonEvent.Pressed, function () {
-    IoTCube.MCP23008.togglePin(MCP_Pins.USR_LED)
-    IoTCube.resetModule(false)
+    IoTCube.togglePin(MCP_Pins.USR_LED)
+    IoTCube.resetModule()
 })
 basic.showString("Test")
 loops.everyInterval(1000, function () {
@@ -24,6 +24,6 @@ loops.everyInterval(300000, function () {
     if (IoTCube.getStatus(eSTATUS_MASK.JOINED)) {
         IoTCube.addAnalogInput(pins.analogReadPin(AnalogPin.P1), Channels.One)
         IoTCube.addTemperature(input.temperature(), Channels.One)
-        IoTCube.SendBuffer(IoTCube.getCayenneBuffer(), Channels.One)
+        IoTCube.SendBuffer(IoTCube.getCayenne(), Channels.One)
     }
 })
