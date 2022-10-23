@@ -174,8 +174,12 @@ namespace IoTCube {
         setParameter(eRUI3_PARAM.APPEUI, AppEUI)
         basic.pause(50)
         setParameter(eRUI3_PARAM.APPKEY, AppKey)
-        basic.pause(300)
+        basic.pause(100)
         resetModule()
+        basic.pause(300)
+        if(getParameter(eRUI3_PARAM.DEVEUI) == DevEUI){     // check written values
+            setEvent(eRAK_EVT.SETUP_SUCCECSS)
+        }
         setStatus(eSTATUS_MASK.SETUP, 0)
     }
 
@@ -198,8 +202,12 @@ namespace IoTCube {
         setParameter(eRUI3_PARAM.APPSKEY, APPSKEY)
         basic.pause(50)
         setParameter(eRUI3_PARAM.NWKSKEY, NWKSKEY)
-        basic.pause(300)
+        basic.pause(100)
         resetModule()
+        basic.pause(300)
+        if (getParameter(eRUI3_PARAM.DEVADDR) == DEVADDR) {     // check written values
+            setEvent(eRAK_EVT.SETUP_SUCCECSS)
+        }
         setStatus(eSTATUS_MASK.SETUP, 0)
     }
     
