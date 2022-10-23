@@ -12,7 +12,9 @@
         "enums.ts",
         "port_expander.ts",
         "payload_format.ts",
-        "enums_payload.ts"
+        "enums_payload.ts",
+        "_locales/de/LoRa-AT-Interface-jsdoc-strings.json",
+        "_locales/de/LoRa-AT-Interface-strings.json"
     ],
     "testFiles": [
         "test.ts"

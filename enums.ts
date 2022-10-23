@@ -25,7 +25,9 @@ enum eRAK_EVT {
     SEND_CONFIRMED_FAILED,
     SEND_CONFIRMED_OK,
     RX_1,
-    RX_2
+    RX_2,
+    SETUP_FAILED,
+    SETUP_SUCCECSS,
 }
 
 enum eBool {

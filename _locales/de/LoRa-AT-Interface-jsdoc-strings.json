@@ -1,0 +1,9 @@
+{
+  "IoTCube": "IoT-Wuerfel\r\nGBS St. Gallen, 2022\r\n* CayenneLPP\r\nThis file implements the CayenneLPP format for the data transmission.",
+  "IoTCube.OTAA_Setup": "******************************************************************************\r\nProcedures",
+  "IoTCube.runDeviceSetup": "******************************************************************************\r\nBackground Processes\r\n\r\nDevice Setup\r\nPrepare LoRa Module, function is called by watchdog",
+  "IoTCube.serialListener": "Serial Listener\r\nRuns in background loop to receive serial messages and react on payload",
+  "IoTCube.watchdog": "Watchdog Process\r\nRuns periodically in background to check device status",
+  "MCP_Defaults": "IoT-Wuerfel\r\nGBS St. Gallen, 2022\r\n* Port Expander\r\nThis file defines the class for the MCP23008 port expander.\r\nThe relevant functions are exported to the \"IoTCube\"-Namespace.",
+  "eRAK_RC": "RAK3172 LoRa Module\r\nGBS St. Gallen, 2022"
+}
