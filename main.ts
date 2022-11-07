@@ -21,6 +21,8 @@ loops.everyInterval(1500, function() {
 //% color="#00796b" icon="\uf1eb" block="IoT Cube"
 namespace IoTCube {
     let message: string= ""
+    let RxMessage: string= ""
+    let RxPort: number=0
     let evtMessage: string = ""
     let status: number = 0
     export let MCP23008 = new MCP(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
@@ -236,6 +238,18 @@ namespace IoTCube {
         writeATCommand("SEND", chanNum + ":" + data.toHex())
     }
 
+
+    //% blockId="LoRa_getDownlink"
+    //% block="Get downlink"
+    //% group="Receive"
+    export function getDownlink() {
+        let buf = []
+        let tmp = getParameter(eRUI3_PARAM.RECV)
+        buf = tmp.split(":")
+        RxPort = parseInt(buf[0])
+        RxMessage = buf[1]
+        return tmp
+    }
 
     /********************************************************************************
      * Background Processes
