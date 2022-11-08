@@ -42,6 +42,13 @@ namespace IoTCube {
         return serial.readString()
     }
 
+    //% blockId=GetLatestEventMessage
+    //% block="Get event message"
+    //% subcategory="Configuration" group="Device"
+    export function getEventMessage() {
+        return evtMessage
+    }
+    
     //% blockId=GetLatestMessage
     //% block="Get serial message"
     //% subcategory="Configuration" group="Device"
@@ -325,12 +332,13 @@ namespace IoTCube {
             }
             if (rc == -1) {
                 if (res.includes("EVT")) {
+                    evtMessage = res    // Globaly store event message
                     if (res.includes("+EVT:JOINED")) {
                         setEvent(eRAK_EVT.JOINED)
                         setStatus(eSTATUS_MASK.CONNECT, 0)
                         setStatus(eSTATUS_MASK.JOINED, 1)
                     }
-                    if (res.includes("+EVT:JOIN_FAILED")) {
+                    else if (res.includes("+EVT:JOIN_FAILED")) {
                         setEvent(eRAK_EVT.JOIN_FAILED)
                         setStatus(eSTATUS_MASK.CONNECT, 1)
                         setStatus(eSTATUS_MASK.JOINED, 0)
