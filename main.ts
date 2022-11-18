@@ -38,7 +38,7 @@ namespace IoTCube {
     export function DownlinkEvent(body: (channel: number, value: number) => void): void{
         loops.everyInterval(2000, function() 
             {
-                if(checkEvent(eRAK_EVT.RX_1)){
+            if (checkEvent(eRAK_EVT.RX_1) || checkEvent(eRAK_EVT.RX_2)){
                     let data = getDownlink()
                     let ch = data[0]
                     let val = (data[1] << 8 | data[2]) / 100
@@ -378,7 +378,6 @@ namespace IoTCube {
                     }
                     else if (res.includes("+EVT:RX_1")) {
                         setEvent(eRAK_EVT.RX_1)
-                        control.raiseEvent(EventBusSource.MES_BROADCAST_GENERAL_ID, EventBusValue.MES_ALERT_EVT_ALARM1)
                     }
                     else if (res.includes("+EVT:RX_2")) {
                         setEvent(eRAK_EVT.RX_2)
