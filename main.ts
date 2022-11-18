@@ -18,6 +18,8 @@ loops.everyInterval(1500, function() {
     IoTCube.watchdog()
 })
 
+
+
 //% color="#00796b" icon="\uf1eb" block="IoT Cube"
 namespace IoTCube {
     let message: string= ""
@@ -29,6 +31,22 @@ namespace IoTCube {
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
     serial.setRxBufferSize(32)
+
+    //% blockId=DownlinkEvent
+    //% block="Downlink Event"
+    //% draggableParameters
+    export function DownlinkEvent(body: (channel: number, value: number) => void): void{
+        loops.everyInterval(2000, function() 
+            {
+                if(checkEvent(eRAK_EVT.RX_1)){
+                    let data = getDownlink()
+                    let ch = data[0]
+                    let val = (data[1] << 8 | data[2]) / 100
+                    body(ch, val)
+                }
+            }        
+        )
+    }
 
     /**
      * Communication
@@ -360,6 +378,7 @@ namespace IoTCube {
                     }
                     else if (res.includes("+EVT:RX_1")) {
                         setEvent(eRAK_EVT.RX_1)
+                        control.raiseEvent(EventBusSource.MES_BROADCAST_GENERAL_ID, EventBusValue.MES_ALERT_EVT_ALARM1)
                     }
                     else if (res.includes("+EVT:RX_2")) {
                         setEvent(eRAK_EVT.RX_2)
