@@ -18,9 +18,13 @@ loops.everyInterval(1500, function() {
     IoTCube.watchdog()
 })
 
+
+
 //% color="#00796b" icon="\uf1eb" block="IoT Cube"
 namespace IoTCube {
     let message: string= ""
+    let RxData: number[]= []
+    let RxPort: number=0
     let evtMessage: string = ""
     let status: number = 0
     export let MCP23008 = new MCP(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
@@ -40,6 +44,13 @@ namespace IoTCube {
         return serial.readString()
     }
 
+    //% blockId=GetLatestEventMessage
+    //% block="Get event message"
+    //% subcategory="Configuration" group="Device"
+    export function getEventMessage() {
+        return evtMessage
+    }
+    
     //% blockId=GetLatestMessage
     //% block="Get serial message"
     //% subcategory="Configuration" group="Device"
@@ -237,6 +248,42 @@ namespace IoTCube {
     }
 
 
+    //% blockId="LoRa_getDownlink"
+    //% block="Get downlink"
+    //% group="Receive"
+    export function getDownlink() {
+        let i = 0
+        let hByte = 0
+        let lByte = 0
+
+        let tmp = getParameter(eRUI3_PARAM.RECV)
+        let downlink = tmp.split(":")[1]
+        RxPort = parseInt(tmp.split(":")[0])
+
+        // extract bytes from string
+        while (i < downlink.length) {
+            RxData.push(parseInt(downlink.substr(i, 2), 16))
+            i += 2
+        }
+
+        return RxData
+    }
+
+    //% blockId=DownlinkEvent
+    //% block="Downlink Event"
+    //% draggableParameters
+    export function DownlinkEvent(body: (channel: number, value: number) => void): void {
+        loops.everyInterval(2000, function () {
+            if (checkEvent(eRAK_EVT.RX_1) || checkEvent(eRAK_EVT.RX_2)) {
+                let data = getDownlink()
+                let ch = data[0]
+                let val = (data[1] << 8 | data[2]) / 100
+                body(ch, val)
+            }
+        }
+        )
+    }
+
     /********************************************************************************
      * Background Processes
      */
@@ -311,12 +358,13 @@ namespace IoTCube {
             }
             if (rc == -1) {
                 if (res.includes("EVT")) {
+                    evtMessage = res    // Globaly store event message
                     if (res.includes("+EVT:JOINED")) {
                         setEvent(eRAK_EVT.JOINED)
                         setStatus(eSTATUS_MASK.CONNECT, 0)
                         setStatus(eSTATUS_MASK.JOINED, 1)
                     }
-                    if (res.includes("+EVT:JOIN_FAILED")) {
+                    else if (res.includes("+EVT:JOIN_FAILED")) {
                         setEvent(eRAK_EVT.JOIN_FAILED)
                         setStatus(eSTATUS_MASK.CONNECT, 1)
                         setStatus(eSTATUS_MASK.JOINED, 0)

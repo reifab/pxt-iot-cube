@@ -113,7 +113,8 @@ const strRAK_PARAM = [
     "VER",
     "LTIME",
     "RX1DL",
-    "RX2DL"
+    "RX2DL",
+    "RECV"
 ]
 
 enum eRUI3_PARAM {
@@ -133,7 +134,8 @@ enum eRUI3_PARAM {
     VERSION,
     LTIME,
     RX1DL,
-    RX2DL
+    RX2DL,
+    RECV
 }
 
 enum eSTATUS_MASK {

@@ -27,3 +27,14 @@ loops.everyInterval(60000, function () {
         IoTCube.SendBuffer(IoTCube.getCayenne(), Channels.One)
     }
 })
+
+IoTCube.DownlinkEvent(function (channel, value) {
+    music.playTone(988, music.beat(BeatFraction.Whole))
+    if (channel == 10) {
+        if (value > 0) {
+            IoTCube.setPin(MCP_Pins.USR_LED, true)
+        } else {
+            IoTCube.setPin(MCP_Pins.USR_LED, false)
+        }
+    }
+})
