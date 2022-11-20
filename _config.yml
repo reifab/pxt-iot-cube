@@ -2,14 +2,10 @@ makecode:
   target: microbit
   platform: microbit
   home_url: https://makecode.microbit.org/
-#theme: jekyll-theme-slate
 
-remote_theme: pages-themes/cayman@v0.2.0
-plugins:
- - jekyll-remote-theme # add this line to the plugins list if you already have one
+theme: jekyll-theme-slate
 
 include:
   - assets
   - README.md
-  - blocks.md
-  - examples.md
+  - docs/*
