@@ -1,5 +1,6 @@
-
 > Diese Seite bei [https://paeber.github.io/lora-at-interface/](https://paeber.github.io/lora-at-interface/) öffnen
+
+
 
 ## Als Erweiterung verwenden
 
@@ -18,12 +19,6 @@ Um dieses Repository in MakeCode zu bearbeiten.
 * klicke auf **Importieren** und dann auf **Importiere URL**
 * füge **https://github.com/paeber/lora-at-interface** ein und klicke auf Importieren
 
-## Blockvorschau
-
-Dieses Bild zeigt den Blockcode vom letzten Commit im Master an.
-Die Aktualisierung dieses Bildes kann einige Minuten dauern.
-
-![Eine gerenderte Ansicht der Blöcke](https://github.com/paeber/lora-at-interface/raw/master/.github/makecode/blocks.png)
 
 #### Metadaten (verwendet für Suche, Rendering)
 
