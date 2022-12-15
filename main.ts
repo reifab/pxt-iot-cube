@@ -66,6 +66,10 @@ namespace IoTCube {
         writeSerial(command)
     }
 
+    /**
+     * Read parameter from LoRa module
+     * @param typ RUI3 command to send
+    */
     //% blockId=getParameter
     //% block="Get | Parameter %typ"
     //% subcategory="Configuration" group="Device"
@@ -77,7 +81,11 @@ namespace IoTCube {
         return message.replace("AT+" + strRAK_PARAM[typ] + "=", "")
     }
 
-
+    /**
+     * Set parameter of LoRa module
+     * @param typ RUI3 parameter to Set
+     * @param value new value of parameter
+    */
     //% blockId=setParameter
     //% block="Set | Parameter %typ to %value"
     //% subcategory="Configuration" group="Device"
@@ -121,6 +129,11 @@ namespace IoTCube {
         status = status & (~(0x01 << (event + 8)))
     }
 
+    /**
+     * Returns true of selected event was triggered and not yet read.
+     * The event is cleared after reading.
+     * @param event is the type of event
+    */
     //% blockId="checkRAKEvent"
     //% block="Is event %event set?"
     //% group="Device"
@@ -132,6 +145,10 @@ namespace IoTCube {
         return false
     }
 
+    /**
+     * Execute a reset on LoRa module (soft or hard)
+     * Configuration is NOT ereased.
+    */
     //% blockId=DeviceReset
     //% block="Reset LoRa || Hard-Reset %hardReset"
     //% hardReset.shadow="toggleOnOff"
@@ -149,6 +166,10 @@ namespace IoTCube {
         setStatus(eSTATUS_MASK.ALL, 0)
     }
 
+    /**
+     * Send LoRa module into low power mode without communication
+     * @param time in miliseconds how long to sleep
+    */
     //% blockId=DeviceSleep
     //% block="LoRa sleep for %time ms"
     //% time.shadow=timePicker
@@ -166,6 +187,9 @@ namespace IoTCube {
      * Procedures
      */
 
+    /**
+     * Configure connection parameters. The data is stored on the device.
+    */
     //% blockId="OTAASetup"
     //% block="OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzy Band %Band Class %devClass"
     //% devClass.defl="A"
@@ -194,6 +218,9 @@ namespace IoTCube {
         setStatus(eSTATUS_MASK.SETUP, 0)
     }
 
+    /**
+     * Configure connection parameters. The data is stored on the device.
+    */
     //% blockId="ABPSetup"
     //% block="ABP Setup | Device Address %DEVADDR Application Session Key %APPSKEY Network Session Key %NWKSKEY Frequenzy Band %Band Class %devClass"
     //% devClass.defl="A"
@@ -222,6 +249,13 @@ namespace IoTCube {
         setStatus(eSTATUS_MASK.SETUP, 0)
     }
     
+    /**
+     * Join LoRa network
+     * @param join allows connect or disconnect.
+     * @param auto_join is stored on the device and allows joining on power-up.
+     * @param reattempt is the number of times a connection is tried to setup.
+     * @param interval is the time between join attempts
+    */
     //% blockId="Network_Join"
     //% block="LoRa Network Join | Join %join On Power-up %auto_join Reattempt interval %interval attempts %attempts"
     //% interval.defl=10, attempts.defl=8
@@ -239,6 +273,11 @@ namespace IoTCube {
         writeATCommand("SEND", chanNum + ":" + data)
     }
 
+    /**
+     * Send a buffer over LoRa network.
+     * @param data is buffer with data (usually in CayenneLPP format)
+     * @param chaNum is the LoRa channel used during transmit
+    */
     //% blockId="LoRa_Send_Buffer"
     //% block="Send | Buffer %data on channel %chanNum"
     //% group="Send"
@@ -269,6 +308,12 @@ namespace IoTCube {
         return RxData
     }
 
+    /**
+     * Blocks in this section will be executed if a downlink occured.
+     * The draggable parameters hold the data from the downlink.
+     * @param channel is the LoRa channel on which the downlink was received
+     * @param value is the value transmitted
+    */
     //% blockId=DownlinkEvent
     //% block="Downlink Event"
     //% draggableParameters

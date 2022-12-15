@@ -37,6 +37,16 @@ namespace IoTCube {
 
     }
     
+
+    /**
+     * Scale analog value to cayenne range.
+    */
+    //% blockId="CayenneLPP_ScaleAnalog"
+    //% block="Scale %value to cayenne" 
+    //% subcategory="CayenneLPP" group="Payload" weight=100
+    export function scaleToCayenne(value: number) {
+        return Math.map(value, 0, 1023, 0, clppAnalogMax)
+    }
     
     /**
      * Payload CayenneLPP
@@ -44,6 +54,9 @@ namespace IoTCube {
     
     let Payload = new CayenneLPP()
 
+    /**
+     * Buffer to be filled with messages to send.
+    */
     //% blockId="CayenneLPP_GetBuffer"
     //% block="Cayenne Buffer" 
     //% subcategory="CayenneLPP" group="Payload" weight=150
@@ -69,13 +82,25 @@ namespace IoTCube {
         Payload.add(data)
     }
 
+    /**
+     * Add an analog input value to Cayenne buffer. Range from -327.68 to 327.67
+     * @param data is the number
+     * @param channel is the target channel
+    */
     //% blockId="CayenneLPP_AnalogInput"
-    //% block="Add Analog Input %data on Channel %channel"
+    //% block="Add Analog Input %data on Channel %channel|| Convert range %convRange""
     //% subcategory="CayenneLPP" group="Payload" weight=120
-    export function addAnalogInput(data: number, channel: Channels) {
+    //% convRange.defl=false
+    //% data.min=-327.68
+    //% data.max=327.67
+    export function addAnalogInput(data: number, channel: Channels, convRange?:boolean) {
+        if(convRange){
+            data = scaleToCayenne(data)
+        }
         Payload.add(channel)
         Payload.add(cCayenne.AnalogInput.code)
-        data = data << 2 // cCayenne.AnalogInput.factor
+        data = data * cCayenne.AnalogInput.factor
+        data = data & 0xffff
         Payload.add(data >> 8)
         Payload.add(data)
     }
@@ -83,10 +108,13 @@ namespace IoTCube {
     //% blockId="CayenneLPP_AnalogOutput"
     //% block="Add Analog Output %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload"
+    //% data.min=-327.68
+    //% data.max=327.67
     export function addAnalogOutput(data: number, channel: Channels) {
         Payload.add(channel)
-        //Payload.add(cCayenne.AnalogOutput.code)
-        data = data << 2 // cCayenne.AnalogOutput.factor
+        Payload.add(cCayenne.AnalogOutput.code)
+        data = data * cCayenne.AnalogOutput.factor
+        data = data & 0xffff
         Payload.add(data >> 8)
         Payload.add(data)
     }

@@ -1,5 +1,8 @@
 // Gib deinen Code hier ein
 
+const clppAnalogMin = -327.68
+const clppAnalogMax = 327.67
+
 enum eCAYENNE_TYPES {
     //% block="Digital Input"   // 1 byte
     DigitalInput = 0,          
