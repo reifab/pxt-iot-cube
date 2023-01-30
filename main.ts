@@ -366,7 +366,7 @@ namespace IoTCube {
                 }
 
                 if (getStatus(eSTATUS_MASK.JOINED)) {
-                    MCP23008.setPin(MCP_Pins.RAK_LED, true)
+                    MCP23008.setPin(MCP_Pins.RAK_LED, false)
                 }
                 else if (getStatus(eSTATUS_MASK.CONNECT)) {
                     MCP23008.togglePin(MCP_Pins.RAK_LED)

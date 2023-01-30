@@ -10,7 +10,7 @@
 // Enum defines
 enum MCP_Defaults {
     I2C_ADDRESS = 0x20,
-    IODIR = 0x18,
+    IODIR = 0x00,
     GPIO = 0xff,
 }
 
@@ -22,14 +22,14 @@ enum MCP_Regs {
 }
 
 enum MCP_Pins {
-    RAK_RST = 0x01,
-    RAK_LED = 0x02,
-    LOG_RST = 0x04,
-    GP3 = 0x08,
-    GP4 = 0x10,
+    LED1 = 0x80,
+    LED2 = 0x08,
+    LED3 = 0x10,
     OC1 = 0x20,
     OC2 = 0x40,
-    USR_LED = 0x80
+    RAK_RST = 0x01,
+    RAK_LED = 0x02,
+    GP3 = 0x04,
 }
 
 namespace IoTCube {
