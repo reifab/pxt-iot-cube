@@ -193,8 +193,9 @@ namespace IoTCube {
     //% blockId="OTAASetup"
     //% block="OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzy Band %Band Class %devClass"
     //% devClass.defl="A"
+    //% Band.defl=eBands.EU868
     //% subcategory="Configuration" group="Setup" weight=100
-    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string, Band: eBands=4, devClass: string = "A") {
+    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string, Band: eBands, devClass: string = "A") {
         setStatus(eSTATUS_MASK.SETUP, 1)
         setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
         basic.pause(50)
@@ -224,8 +225,9 @@ namespace IoTCube {
     //% blockId="ABPSetup"
     //% block="ABP Setup | Device Address %DEVADDR Application Session Key %APPSKEY Network Session Key %NWKSKEY Frequenzy Band %Band Class %devClass"
     //% devClass.defl="A"
+    //% Band.defl=eBands.EU868
     //% subcategory="Configuration" group="Setup"
-    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string, Band: eBands=4, devClass: string="A") {
+    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string, Band: eBands, devClass: string="A") {
         setStatus(eSTATUS_MASK.SETUP, 1)
         setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
         basic.pause(50)
