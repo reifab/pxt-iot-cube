@@ -65,7 +65,12 @@ namespace IoTCube {
         public getPin(pin: MCP_Pins) {
             let value = this.read(MCP_Regs.GPIO)
             this.regGPIO = value
-            return (value & pin)
+            if (value & pin) {
+                return 0
+            }
+            else {
+                return 1
+            }
         }
 
         //% Set port expander pin to high / low

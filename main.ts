@@ -363,28 +363,27 @@ namespace IoTCube {
     export function watchdog() {
         if (getStatus(eSTATUS_MASK.INIT)) {
             if (!getStatus(eSTATUS_MASK.SETUP)) {
-                if (!getStatus(eSTATUS_MASK.JOINED)) {
+                if (!getStatus(eSTATUS_MASK.JOINED)) {      // No connection
                     setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
                 }
 
-                if (getStatus(eSTATUS_MASK.JOINED)) {
+                if (getStatus(eSTATUS_MASK.JOINED)) {       // Connection established
+                    setStatus(eSTATUS_MASK.CONNECT, 0)
                     MCP23008.setPin(MCP_Pins.RAK_LED, false)
                 }
-                else if (getStatus(eSTATUS_MASK.CONNECT)) {
+                else if (getStatus(eSTATUS_MASK.CONNECT)) { // Connecting
                     MCP23008.togglePin(MCP_Pins.RAK_LED)
-                    if (getStatus(eSTATUS_MASK.JOINED)) {
-                        setStatus(eSTATUS_MASK.CONNECT, 0)
-                    }
                 }
-                else {
+                else {                                      // No connection and not trying to connect
                     MCP23008.setPin(MCP_Pins.RAK_LED, false)
                 }
-                if (getStatus(eSTATUS_MASK.SLEEP)) {
+
+                if (getStatus(eSTATUS_MASK.SLEEP)) {        // Module in sleep mode
                     MCP23008.setPin(MCP_Pins.RAK_LED, false)
                 }
             }
         }
-        else {
+        else {      // Initial setup required
             runDeviceSetup()
         }
     }
