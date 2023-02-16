@@ -8,7 +8,6 @@ Auf dieser Seite werden einzelne Blöcke der Erweiterung beschrieben.
  - [GPIO](#gpio)
  - [weitere](#weitere)
 
-
 ------------------------------------------------
 ## LoRa Netzwerk
 Die LoRa Kommunikation ist das Herzstück der Erweiterung. Im Fokus steht die Steuerung des [RAK3172 LoRa Moduls](https://docs.rakwireless.com/Product-Categories/WisDuo/RAK3172-Module/Overview/). 
@@ -57,6 +56,7 @@ Für die spezifische Steuerung des LoRa Moduls sind eigene Blöcke implementiert
 | Set parameter | IoTCube.setParameter(eRUI3_PARAM.CLASS, "B") |                               |
 | Get parameter | IoTCube.getParameter(eRUI3_PARAM.RSSI) | Auslesen der Register im LoRa Modul |
 
+
 ### Reset
 Das LoRa Modul kann mit dem Reset Befehl neu gestartet werden. Dies wird Beispielsweise nach der LoRa Konfiguration ausgeführt. Der Reset kann als UART-Kommando ausgelöst werden. Sollte allerdings die serielle Verbindung probleme machen, oder wie beim Schlafmodus nicht verfügbar sein, so kann auf Hardware Ebene ein Neustart erzwungen werden. Dabei bleiben die Einstellungen erhalten. Lediglich die LoRa verbindung bleibt nicht erhalten und muss bei Bedarf wieder neu aufgebaut werden. Mit dem automatischen Verbindungsaufbau aktiv, wird dies vom Modul selber erledigt.
 ```blocks
@@ -81,8 +81,8 @@ input.onButtonPressed(Button.A, function() {
 })
 ```
 
+---------------------------------------------
 
-------------------------------------------------
 ## GPIO
 Der IoT-Würfel besitzt eine Benutzer-LED sowie zwei Open-Collector Ausgänge. Für die Ansteuerung dieser Komponenten befinden sich die Blöcke in **IoT Cube** in der Gruppe **Pins**. 
 ```blocks
@@ -130,6 +130,7 @@ IoTCube.addAnalogInput(26.53, Channels.One, True)
 ```
 
 ------------------------------------------------
+
 ## Weitere
 Gewisse Funktionen sind Komplexer aber haben dafür mehr Potential. Diese Kategorie ist für Fortgeschrittene empfehlenswert.
 
