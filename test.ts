@@ -4,7 +4,7 @@
  */
 
 input.onLogoEvent(TouchButtonEvent.Pressed, function () {
-    IoTCube.togglePin(MCP_Pins.USR_LED)
+    IoTCube.togglePin(MCP_Pins.LED1)
     IoTCube.resetModule()
 })
 basic.showString("Test")
@@ -32,9 +32,9 @@ IoTCube.DownlinkEvent(function (channel, value) {
     music.playTone(988, music.beat(BeatFraction.Whole))
     if (channel == 10) {
         if (value > 0) {
-            IoTCube.setPin(MCP_Pins.USR_LED, true)
+            IoTCube.setPin(MCP_Pins.LED1, true)
         } else {
-            IoTCube.setPin(MCP_Pins.USR_LED, false)
+            IoTCube.setPin(MCP_Pins.LED1, false)
         }
     }
 })

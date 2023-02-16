@@ -193,8 +193,9 @@ namespace IoTCube {
     //% blockId="OTAASetup"
     //% block="OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzy Band %Band Class %devClass"
     //% devClass.defl="A"
+    //% Band.defl=eBands.EU868
     //% subcategory="Configuration" group="Setup" weight=100
-    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string, Band: eBands=4, devClass: string = "A") {
+    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string, Band: eBands, devClass: string = "A") {
         setStatus(eSTATUS_MASK.SETUP, 1)
         setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
         basic.pause(50)
@@ -224,8 +225,9 @@ namespace IoTCube {
     //% blockId="ABPSetup"
     //% block="ABP Setup | Device Address %DEVADDR Application Session Key %APPSKEY Network Session Key %NWKSKEY Frequenzy Band %Band Class %devClass"
     //% devClass.defl="A"
+    //% Band.defl=eBands.EU868
     //% subcategory="Configuration" group="Setup"
-    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string, Band: eBands=4, devClass: string="A") {
+    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string, Band: eBands, devClass: string="A") {
         setStatus(eSTATUS_MASK.SETUP, 1)
         setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
         basic.pause(50)
@@ -361,28 +363,27 @@ namespace IoTCube {
     export function watchdog() {
         if (getStatus(eSTATUS_MASK.INIT)) {
             if (!getStatus(eSTATUS_MASK.SETUP)) {
-                if (!getStatus(eSTATUS_MASK.JOINED)) {
+                if (!getStatus(eSTATUS_MASK.JOINED)) {      // No connection
                     setStatus(eSTATUS_MASK.JOINED, parseInt(getParameter(eRUI3_PARAM.NJS)))
                 }
 
-                if (getStatus(eSTATUS_MASK.JOINED)) {
-                    MCP23008.setPin(MCP_Pins.RAK_LED, true)
-                }
-                else if (getStatus(eSTATUS_MASK.CONNECT)) {
-                    MCP23008.togglePin(MCP_Pins.RAK_LED)
-                    if (getStatus(eSTATUS_MASK.JOINED)) {
-                        setStatus(eSTATUS_MASK.CONNECT, 0)
-                    }
-                }
-                else {
+                if (getStatus(eSTATUS_MASK.JOINED)) {       // Connection established
+                    setStatus(eSTATUS_MASK.CONNECT, 0)
                     MCP23008.setPin(MCP_Pins.RAK_LED, false)
                 }
-                if (getStatus(eSTATUS_MASK.SLEEP)) {
+                else if (getStatus(eSTATUS_MASK.CONNECT)) { // Connecting
+                    MCP23008.togglePin(MCP_Pins.RAK_LED)
+                }
+                else {                                      // No connection and not trying to connect
+                    MCP23008.setPin(MCP_Pins.RAK_LED, false)
+                }
+
+                if (getStatus(eSTATUS_MASK.SLEEP)) {        // Module in sleep mode
                     MCP23008.setPin(MCP_Pins.RAK_LED, false)
                 }
             }
         }
-        else {
+        else {      // Initial setup required
             runDeviceSetup()
         }
     }

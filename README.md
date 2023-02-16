@@ -19,6 +19,15 @@ Um dieses Repository in MakeCode zu bearbeiten.
 * klicke auf **Importieren** und dann auf **Importiere URL**
 * füge **https://github.com/paeber/lora-at-interface** ein und klicke auf Importieren
 
+### Testen von Github Pages
+
+Github pages basiert auf jekyll und kann mithilfe der Anleitung in einer lokalen Testumgebung überprüft werden: https://jekyllrb.com/docs/
+
+```shell
+# Run inside root folder of github repository
+bundle exec jekyll serve
+```
+
 
 #### Metadaten (verwendet für Suche, Rendering)
 
