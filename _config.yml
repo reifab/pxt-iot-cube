@@ -3,19 +3,23 @@ makecode:
   platform: microbit
   home_url: https://makecode.microbit.org/
 
-theme: jekyll-theme-cayman #jekyll-theme-slate
+#theme: jekyll-theme-cayman
+remote_theme: rundocs/jekyll-rtd-theme
+
 
 include:
-  - assets
+  - assets/*
   - README.md
   - docs/*
 
 title: [IoT-Würfel]
 description: [Dokumentation zur Makecode Erweiterung IoT-Cube]
+lang: de
 show_downloads: [false]
 
 plugins:
-  - jekyll-remote-theme # add this line to the plugins list if you already have one
+  - jekyll-remote-theme 
+  - jekyll-github-metadata
 
 github:
   start_url: /lora-at-interface

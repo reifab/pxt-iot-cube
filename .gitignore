@@ -10,3 +10,4 @@ _site
 .header.json
 .simstate.json
 Gemfile.lock
+_build/*
