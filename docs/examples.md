@@ -63,7 +63,4 @@ Für das einschalten der LED ist folgende Nachricht notwendig:
 
 
 
-
-[Blöcke](https://paeber.github.io/lora-at-interface/docs/blocks)
-
 <script src="https://makecode.com/gh-pages-embed.js"></script><script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>

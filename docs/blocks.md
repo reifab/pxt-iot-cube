@@ -164,8 +164,5 @@ IoTCube.writeATCommand("DEVEUI", "1122334455667788")
 
 
 
-------------------------------------------------
-[Beispiele](https://paeber.github.io/lora-at-interface/docs/examples)
-
 <script src="https://makecode.com/gh-pages-embed.js"></script><script>makeCodeRender("{{ site.makecode.home_url }}", "{{ site.github.owner_name }}/{{ site.github.repository_name }}");</script>
 

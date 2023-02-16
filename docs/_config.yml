@@ -7,10 +7,8 @@ makecode:
 remote_theme: rundocs/jekyll-rtd-theme
 
 
-include:
-  - assets/*
-  - README.md
-  - docs/*
+include: 
+  - assets
 
 title: [IoT-Würfel]
 description: [Dokumentation zur Makecode Erweiterung IoT-Cube]
