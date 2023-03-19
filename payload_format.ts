@@ -67,7 +67,10 @@ namespace IoTCube {
     //% blockId="CayenneLPP_DigitalInput"
     //% block="Add Digital Input %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload" weight=120
-    export function addDigitalInput(data: number, channel: Channels) {
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addDigitalInput(data: number, channel: number) {
         Payload.add(channel)
         Payload.add(cCayenne.DigitalInput.code)
         Payload.add(data)
@@ -76,7 +79,10 @@ namespace IoTCube {
     //% blockId="CayenneLPP_DigitalOutput"
     //% block="Add Digital Output %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload" 
-    export function addDigitalOutput(data: number, channel: Channels) {
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addDigitalOutput(data: number, channel: number) {
         Payload.add(channel)
         Payload.add(cCayenne.DigitalOutput.code)
         Payload.add(data)
@@ -93,7 +99,8 @@ namespace IoTCube {
     //% convRange.defl=false
     //% data.min=-327.68
     //% data.max=327.67
-    export function addAnalogInput(data: number, channel: Channels, convRange?:boolean) {
+    //% channel.min=0, channel.max=255, channel.defl=1
+    export function addAnalogInput(data: number, channel: number, convRange?:boolean) {
         if(convRange){
             data = scaleToCayenne(data)
         }
@@ -110,7 +117,10 @@ namespace IoTCube {
     //% subcategory="CayenneLPP" group="Payload"
     //% data.min=-327.68
     //% data.max=327.67
-    export function addAnalogOutput(data: number, channel: Channels) {
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addAnalogOutput(data: number, channel: number) {
         Payload.add(channel)
         Payload.add(cCayenne.AnalogOutput.code)
         data = data * cCayenne.AnalogOutput.factor
@@ -122,7 +132,10 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Temperature"
     //% block="Add Temperature %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload" weight=90
-    export function addTemperature(data: number, channel: Channels){
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addTemperature(data: number, channel: number){
         let temp = 0
         if (data < 0) {
             data = -data
@@ -138,7 +151,10 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Humidity"
     //% block="Add Humidity %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload" weight=90
-    export function addHumidity(data: number, channel: Channels) {
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addHumidity(data: number, channel: number) {
         Payload.add(channel)
         Payload.add(cCayenne.Humidity.code)
         data = (data * cCayenne.Humidity.factor)
@@ -148,7 +164,10 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Illuminance"
     //% block="Add Illuminance %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload"
-    export function addIlluminance(data: number, channel: Channels) {
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addIlluminance(data: number, channel: number) {
         Payload.add(channel)
         Payload.add(cCayenne.Illuminance.code)
         data = data * cCayenne.Illuminance.factor
@@ -168,7 +187,10 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Accelerometer"
     //% block="Add Accelerometer %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload" weight=50
-    export function addAccelerometer(x: number, y: number, z: number, channel: Channels) {
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addAccelerometer(x: number, y: number, z: number, channel: number) {
         Payload.add(channel)
         Payload.add(cCayenne.Accelerometer.code)
         x = x * 1000
@@ -185,7 +207,10 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Barometer"
     //% block="Add Barometer %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload"
-    export function addBarometer(data: number, channel: Channels) {
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addBarometer(data: number, channel: number) {
         Payload.add(channel)
         Payload.add(cCayenne.Barometer.code)
         Payload.add(data >> 8)
