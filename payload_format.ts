@@ -185,7 +185,7 @@ namespace IoTCube {
     }
 
     //% blockId="CayenneLPP_Accelerometer"
-    //% block="Add Accelerometer %data on Channel %channel"
+    //% block="Add Accelerometer | x: %x y: %y z: %z on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload" weight=50
     //% channel.min=0
     //% channel.max=255

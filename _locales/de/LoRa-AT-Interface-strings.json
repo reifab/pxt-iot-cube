@@ -25,7 +25,7 @@
   "IoTCube.OTAA_Setup|block": "OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzband %Band Klasse %devClass",
   "IoTCube.SendBuffer|block": "Sende | Buffer %data || auf F-Port %fport",
   "IoTCube.SendStr|block": "Sende | string %data || auf F-Port %fport",
-  "IoTCube.addAccelerometer|block": "Füge Accelerometer %data auf Kanal %channel hinzu",
+  "IoTCube.addAccelerometer|block": "Füge Accelerometer | x: %x y: %y z: %z auf Kanal %channel hinzu",
   "IoTCube.addAnalogInput|block": "Füge Analog Input %data auf Kanal %channel hinzu",
   "IoTCube.addAnalogOutput|block": "Füge Analog Output %data auf Kanal %channel hinzu",
   "IoTCube.addBarometer|block": "Füge Barometer %data auf Kanal %channel hinzu",
