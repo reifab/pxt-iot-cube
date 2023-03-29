@@ -22,9 +22,9 @@ loops.everyInterval(1000, function () {
 })
 loops.everyInterval(60000, function () {
     if (IoTCube.getStatus(eSTATUS_MASK.JOINED)) {
-        IoTCube.addAnalogInput(pins.analogReadPin(AnalogPin.P1), Channels.One)
-        IoTCube.addTemperature(input.temperature(), Channels.One)
-        IoTCube.SendBuffer(IoTCube.getCayenne(), Channels.One)
+        IoTCube.addAnalogInput(pins.analogReadPin(AnalogPin.P1), 1)
+        IoTCube.addTemperature(input.temperature(), 1)
+        IoTCube.SendBuffer(IoTCube.getCayenne(), 1)
     }
 })
 

@@ -217,7 +217,10 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Presence"
     //% block="Add Presence %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload"
-    export function addPresence(data: number, channel: Channels) {
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addPresence(data: number, channel: number) {
         if (!checkBufferSpace(cCayenne.Presence.size)) {
             return
         }
