@@ -15,7 +15,7 @@ namespace IoTCube {
         _cursor: number
 
         constructor(){
-            this._buffer = Buffer.create(32)
+            this._buffer = Buffer.create(64)
             this._cursor = 0
         }
         
@@ -33,6 +33,10 @@ namespace IoTCube {
             let retBuf = this._buffer.chunked(this._cursor)[0]
             this.clear()
             return retBuf
+        }
+
+        public getFree(): number{
+            return this._buffer.length - this._cursor
         }
 
     }
@@ -62,6 +66,13 @@ namespace IoTCube {
     //% subcategory="CayenneLPP" group="Payload" weight=150
     export function getCayenne() {
         return Payload.get()
+    }
+
+    //% blockId="CayenneLPP_ClearBuffer"
+    //% block="Clear Cayenne Buffer" 
+    //% subcategory="CayenneLPP" group="Payload" weight=150
+    export function clearCayenne() {
+        return Payload.clear()
     }
 
     //% blockId="CayenneLPP_DigitalInput"
@@ -215,5 +226,31 @@ namespace IoTCube {
         Payload.add(cCayenne.Barometer.code)
         Payload.add(data >> 8)
         Payload.add(data)
+    }
+
+
+    //% blockId="CayenneLPP_GPS"
+    //% block="Add GPS | latitude: %latitude longitude: %longitude altitude: %meters on Channel %channel"
+    //% subcategory="CayenneLPP" group="Payload"
+    //% channel.min=0
+    //% channel.max=255
+    //% channel.defl=1
+    export function addGPS(latitude: number, longitude: number, meters: number, channel: number){
+        let lat = latitude * 10000;
+        let lon = longitude * 10000;
+        let alt = meters * 100;
+
+        Payload.add(channel)
+        Payload.add(cCayenne.GPS.code)
+
+        Payload.add(lat >> 16);
+        Payload.add(lat >> 8);
+        Payload.add(lat);
+        Payload.add(lon >> 16);
+        Payload.add(lon >> 8);
+        Payload.add(lon);
+        Payload.add(alt >> 16);
+        Payload.add(alt >> 8);
+        Payload.add(alt);
     }
 }
