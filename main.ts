@@ -99,10 +99,7 @@ namespace IoTCube {
      * Device Control
      */
 
-    //% blockId=DeviceStatusSet
-    //% block="Set Device Status Bit %mask to %state"
-    //% group="Device"
-    function setStatus(mask: eSTATUS_MASK, state: number){
+    export function setStatus(mask: eSTATUS_MASK, state: number){
         if (state){
             status = status | mask
         }
