@@ -31,7 +31,7 @@ IoTCube.LoRa_Join(eBool.enable,eBool.enable,10,8)
 ```
 
 ### LoRa Uplink
-Bei einer Verbindung mit dem LoRa Netzwerk, können Daten übermittelt werden. Im Normalfall wird ein Buffer mit den Daten vorbereitet und anschliessend mit dem Block *SendBuffer* gesendet. Über das Dropdown-Menu kann der Kanal ausgewählt werden.
+Bei einer Verbindung mit dem LoRa Netzwerk, können Daten übermittelt werden. Im Normalfall wird ein Buffer mit den Daten vorbereitet und anschliessend mit dem Block *SendBuffer* gesendet. Über das Dropdown-Menu kann der Kanal ausgewählt werden. Die LoRa spezifikation besagt, dass eine Nachricht-länge von 51 Bytes nicht überschritten werden soll.
 ```blocks
 IoTCube.SendBuffer(IoTCube.getCayenne(), Channels.Five)
 ```
@@ -118,15 +118,54 @@ Das Cayenne Low Power Payload Format dient der übertragung von Daten in komprim
 
 Die Dokumentation zu Cayenne ist bei [docs.mydevices.com](https://docs.mydevices.com/docs/lorawan/cayenne-lpp) verfügbar.
 
+### Cayenne Buffer
+Für das übermitteln von Daten nach dem Cayenne Standard, stellt die Erweiterung einen Buffer zur verfügung. Der Buffer kann gefüllt werden und schlussendlich als LoRa Uplink verschikt werden. Der Buffer bietet den Vorteil, dass meherere Messwerte (z.B. Temperatur und Luftfeuchtigkeit) gemeinsam in einer Nachricht verschikt werden können. Dadurch wird die Übermittlung effizienter. Der Buffer ist auf 51 Bytes limitiert.
+
+Für jeden Unterstützten Datentyp gibt es einen eigenen Block. Bei all diesen Blöcken wird zu beginn geprüft, ob im Buffer noch Platz ist. Sollte der Platz nicht reichen, werden die entsprechenden Daten nicht angefügt.
+
+### Skalierung
+
+```blocks
+IoTCube.scaleToCayenne(795)
+```
+
 ### Analog Input
 Ein analoger Eingang kann Werte von *-327.68* bis *+327.67* annehmen. Dies ist Aufgrund des Cayenne Standards.
 ```blocks
-IoTCube.addAnalogInput(26.53, Channels.One)
+IoTCube.addAnalogInput(26.53, 1)
+IoTCube.addAnalogInput(pins.analogReadPin(AnalogPin.P0), 1)
 ```
 
 Für den Micro:bit sind die analogen Werte im Bereich von *0* bis *1023*. Die Skalierung von micro:bit zu cayenne kann im Block aktiviert werden. Die Option ist hinter dem *+* versteckt und Normalerweise deaktiviert.
 ```blocks
-IoTCube.addAnalogInput(26.53, Channels.One, True)
+IoTCube.addAnalogInput(26.53, 1, True)
+IoTCube.addAnalogInput(pins.analogReadPin(AnalogPin.P0), 1, true)
+```
+
+### Helligkeit
+```blocks
+IoTCube.addIlluminance(pins.analogReadPin(AnalogPin.P1), 1)
+```
+
+### Beschleunigungssensor
+Beschleunigungsdaten von Sensor auf dem micro:bit können direkt dem Block übergeben werden.
+```blocks
+IoTCube.addAccelerometer(input.acceleration(Dimension.X), input.acceleration(Dimension.Y), input.acceleration(Dimension.Z), 1)
+```
+
+### GPS Position
+Der GPS Block übermittelt eine Position über LoRa. Dies kann von einem GPS Modul geschehen oder eine manuelle Eingabe beim erstellen des Programms. Die GPS Position wird als solche vom The-Things-Network erkannt und dort in einer Karte angezeigt.
+```blocks
+IoTCube.addGPS(47.0748, 12.6852, 3798, 1)
+```
+
+### Downlink mit Cayenne
+Ein Downlink im Cayenne Format ist im Prinzip wie bei den Analog Werten aufgebaut. Es können 256 unterscheidbare Kanäle verwendet werden. Die Kanäle sind jeweils im Format `value_XY` aufgebaut, wobei XY eine Zahl von 0 bis 255 ist.
+
+```json
+{
+    "value_10": 1
+}
 ```
 
 ------------------------------------------------
