@@ -79,7 +79,12 @@ namespace IoTCube {
     //% block="Check Cayenne Buffer Space" 
     //% subcategory="CayenneLPP" group="Payload"
     function checkBufferSpace(size: number) {
-        return (size <= Payload.getFree())
+        if (size <= Payload.getFree()) {
+            IoTCube.setStatus(eSTATUS_MASK.BUFFER_FULL, 0)
+            return true
+        }
+        IoTCube.setStatus(eSTATUS_MASK.BUFFER_FULL, 1)
+        return false
     }
 
     //% blockId="CayenneLPP_DigitalInput"
@@ -104,12 +109,11 @@ namespace IoTCube {
     //% channel.max=255
     //% channel.defl=1
     export function addDigitalOutput(data: number, channel: number) {
-        if (!checkBufferSpace(cCayenne.DigitalOutput.size)) {
-            return
+        if (checkBufferSpace(cCayenne.DigitalOutput.size)) {
+            Payload.add(channel)
+            Payload.add(cCayenne.DigitalOutput.code)
+            Payload.add(data)
         }
-        Payload.add(channel)
-        Payload.add(cCayenne.DigitalOutput.code)
-        Payload.add(data)
     }
 
     /**
@@ -125,18 +129,17 @@ namespace IoTCube {
     //% data.max=327.67
     //% channel.min=0, channel.max=255, channel.defl=1
     export function addAnalogInput(data: number, channel: number, convRange?:boolean) {
-        if (!checkBufferSpace(cCayenne.AnalogInput.size)) {
-            return
+        if (checkBufferSpace(cCayenne.AnalogInput.size)) {
+            if (convRange) {
+                data = scaleToCayenne(data)
+            }
+            Payload.add(channel)
+            Payload.add(cCayenne.AnalogInput.code)
+            data = data * cCayenne.AnalogInput.factor
+            data = data & 0xffff
+            Payload.add(data >> 8)
+            Payload.add(data)
         }
-        if(convRange){
-            data = scaleToCayenne(data)
-        }
-        Payload.add(channel)
-        Payload.add(cCayenne.AnalogInput.code)
-        data = data * cCayenne.AnalogInput.factor
-        data = data & 0xffff
-        Payload.add(data >> 8)
-        Payload.add(data)
     }
 
     //% blockId="CayenneLPP_AnalogOutput"
@@ -148,15 +151,14 @@ namespace IoTCube {
     //% channel.max=255
     //% channel.defl=1
     export function addAnalogOutput(data: number, channel: number) {
-        if (!checkBufferSpace(cCayenne.AnalogOutput.size)) {
-            return
+        if (checkBufferSpace(cCayenne.AnalogOutput.size)) {
+            Payload.add(channel)
+            Payload.add(cCayenne.AnalogOutput.code)
+            data = data * cCayenne.AnalogOutput.factor
+            data = data & 0xffff
+            Payload.add(data >> 8)
+            Payload.add(data)
         }
-        Payload.add(channel)
-        Payload.add(cCayenne.AnalogOutput.code)
-        data = data * cCayenne.AnalogOutput.factor
-        data = data & 0xffff
-        Payload.add(data >> 8)
-        Payload.add(data)
     }
 
     //% blockId="CayenneLPP_Temperature"
@@ -166,19 +168,18 @@ namespace IoTCube {
     //% channel.max=255
     //% channel.defl=1
     export function addTemperature(data: number, channel: number){
-        if (!checkBufferSpace(cCayenne.Temperature.size)) {
-            return
+        if (checkBufferSpace(cCayenne.Temperature.size)) {
+            let temp = 0
+            if (data < 0) {
+                data = -data
+                temp = temp | 0x8000
+            }
+            temp = temp | (data * 10)
+            Payload.add(channel)
+            Payload.add(cCayenne.Temperature.code)
+            Payload.add(temp >> 8)
+            Payload.add(temp)
         }
-        let temp = 0
-        if (data < 0) {
-            data = -data
-            temp = temp | 0x8000
-        }
-        temp = temp | (data * 10)
-        Payload.add(channel)
-        Payload.add(cCayenne.Temperature.code)
-        Payload.add(temp >> 8)
-        Payload.add(temp)
     }
 
     //% blockId="CayenneLPP_Humidity"
@@ -188,13 +189,12 @@ namespace IoTCube {
     //% channel.max=255
     //% channel.defl=1
     export function addHumidity(data: number, channel: number) {
-        if (!checkBufferSpace(cCayenne.Humidity.size)) {
-            return
+        if (checkBufferSpace(cCayenne.Humidity.size)) {
+            Payload.add(channel)
+            Payload.add(cCayenne.Humidity.code)
+            data = (data * cCayenne.Humidity.factor)
+            Payload.add(data)
         }
-        Payload.add(channel)
-        Payload.add(cCayenne.Humidity.code)
-        data = (data * cCayenne.Humidity.factor)
-        Payload.add(data)
     }
 
     //% blockId="CayenneLPP_Illuminance"
@@ -204,14 +204,13 @@ namespace IoTCube {
     //% channel.max=255
     //% channel.defl=1
     export function addIlluminance(data: number, channel: number) {
-        if (!checkBufferSpace(cCayenne.Illuminance.size)) {
-            return
+        if (checkBufferSpace(cCayenne.Illuminance.size)) {
+            Payload.add(channel)
+            Payload.add(cCayenne.Illuminance.code)
+            data = data * cCayenne.Illuminance.factor
+            Payload.add(data >> 8)
+            Payload.add(data)
         }
-        Payload.add(channel)
-        Payload.add(cCayenne.Illuminance.code)
-        data = data * cCayenne.Illuminance.factor
-        Payload.add(data >> 8)
-        Payload.add(data)
     }
 
     //% blockId="CayenneLPP_Presence"
@@ -221,12 +220,11 @@ namespace IoTCube {
     //% channel.max=255
     //% channel.defl=1
     export function addPresence(data: number, channel: number) {
-        if (!checkBufferSpace(cCayenne.Presence.size)) {
-            return
-        }
-        Payload.add(channel)
-        Payload.add(cCayenne.Presence.code)
-        Payload.add(data)
+        if (checkBufferSpace(cCayenne.Presence.size)) {
+            Payload.add(channel)
+            Payload.add(cCayenne.Presence.code)
+            Payload.add(data)
+        }    
     }
 
     //% blockId="CayenneLPP_Accelerometer"
@@ -236,20 +234,19 @@ namespace IoTCube {
     //% channel.max=255
     //% channel.defl=1
     export function addAccelerometer(x: number, y: number, z: number, channel: number) {
-        if (!checkBufferSpace(cCayenne.Accelerometer.size)) {
-            return
+        if (checkBufferSpace(cCayenne.Accelerometer.size)) {
+            Payload.add(channel)
+            Payload.add(cCayenne.Accelerometer.code)
+            x = x * 1000
+            Payload.add(x >> 8)
+            Payload.add(x)
+            y = y * 1000
+            Payload.add(y >> 8)
+            Payload.add(y)
+            z = z * 1000
+            Payload.add(z >> 8)
+            Payload.add(z)
         }
-        Payload.add(channel)
-        Payload.add(cCayenne.Accelerometer.code)
-        x = x * 1000
-        Payload.add(x >> 8)
-        Payload.add(x)
-        y = y * 1000
-        Payload.add(y >> 8)
-        Payload.add(y)
-        z = z * 1000
-        Payload.add(z >> 8)
-        Payload.add(z)
     }
 
     //% blockId="CayenneLPP_Barometer"
@@ -259,13 +256,12 @@ namespace IoTCube {
     //% channel.max=255
     //% channel.defl=1
     export function addBarometer(data: number, channel: number) {
-        if (!checkBufferSpace(cCayenne.Barometer.size)) {
-            return
+        if (checkBufferSpace(cCayenne.Barometer.size)) {
+            Payload.add(channel)
+            Payload.add(cCayenne.Barometer.code)
+            Payload.add(data >> 8)
+            Payload.add(data)
         }
-        Payload.add(channel)
-        Payload.add(cCayenne.Barometer.code)
-        Payload.add(data >> 8)
-        Payload.add(data)
     }
 
 
@@ -276,24 +272,23 @@ namespace IoTCube {
     //% channel.max=255
     //% channel.defl=1
     export function addGPS(latitude: number, longitude: number, meters: number, channel: number){
-        if (!checkBufferSpace(cCayenne.GPS.size)) {
-            return
+        if (checkBufferSpace(cCayenne.GPS.size)) {
+            let lat = latitude * 10000;
+            let lon = longitude * 10000;
+            let alt = meters * 100;
+
+            Payload.add(channel)
+            Payload.add(cCayenne.GPS.code)
+
+            Payload.add(lat >> 16);
+            Payload.add(lat >> 8);
+            Payload.add(lat);
+            Payload.add(lon >> 16);
+            Payload.add(lon >> 8);
+            Payload.add(lon);
+            Payload.add(alt >> 16);
+            Payload.add(alt >> 8);
+            Payload.add(alt);
         }
-        let lat = latitude * 10000;
-        let lon = longitude * 10000;
-        let alt = meters * 100;
-
-        Payload.add(channel)
-        Payload.add(cCayenne.GPS.code)
-
-        Payload.add(lat >> 16);
-        Payload.add(lat >> 8);
-        Payload.add(lat);
-        Payload.add(lon >> 16);
-        Payload.add(lon >> 8);
-        Payload.add(lon);
-        Payload.add(alt >> 16);
-        Payload.add(alt >> 8);
-        Payload.add(alt);
     }
 }
