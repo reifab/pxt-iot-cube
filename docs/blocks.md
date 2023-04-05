@@ -31,9 +31,10 @@ IoTCube.LoRa_Join(eBool.enable,eBool.enable,10,8)
 ```
 
 ### LoRa Uplink
-Bei einer Verbindung mit dem LoRa Netzwerk, können Daten übermittelt werden. Im Normalfall wird ein Buffer mit den Daten vorbereitet und anschliessend mit dem Block *SendBuffer* gesendet. Über das Dropdown-Menu kann der Kanal ausgewählt werden. Die LoRa spezifikation besagt, dass eine Nachricht-länge von 51 Bytes nicht überschritten werden soll.
+Bei einer Verbindung mit dem LoRa Netzwerk, können Daten übermittelt werden. Im Normalfall wird ein Buffer mit den Daten vorbereitet und anschliessend mit dem Block *SendBuffer* gesendet. Der F-Port ist Standardmässig auf 1 gesetzt und kann durch das Aufklappen des Blocks geändert werden. Die LoRa spezifikation besagt, dass eine Nachricht-länge von 51 Bytes nicht überschritten werden soll. Daten werden dem Buffer nur hinzugefügt, wenn der Platz ausreicht. Überflüssige Daten werden ignoriert.
 ```blocks
-IoTCube.SendBuffer(IoTCube.getCayenne(), Channels.Five)
+IoTCube.SendBuffer(IoTCube.getCayenne())
+IoTCube.SendBuffer(IoTCube.getCayenne(), 5)
 ```
 
 ### LoRa Downlink
@@ -91,13 +92,19 @@ IoTCube.setPin(MCP_Pins.OC1, true)
 IoTCube.setPin(MCP_Pins.OC2, false)
 
 if (IoTCube.getStatus(eSTATUS_MASK.JOINED)) {
-    IoTCube.addDigitalOutput(IoTCube.getPin(MCP_Pins.OC1), Channels.One)
-    IoTCube.SendBuffer(IoTCube.getCayenne(), Channels.One)
+    IoTCube.addDigitalOutput(IoTCube.getPin(MCP_Pins.OC1), 1)
+    IoTCube.SendBuffer(IoTCube.getCayenne(), 1)
 }
 ```
 ------------------------------------------------
 ## Cayenne LPP
-Das Cayenne Low Power Payload Format dient der übertragung von Daten in komprimierter Form. Die Idee ist, dass Werte mit einem Index versehen werden, um deren Inhalt deuten zu können. Der Index besteht aus einem Byte (also 256 möglichkeiten) und ist in der Tabelle vermerkt.
+Das Cayenne Low Power Payload Format dient der übertragung von Daten in komprimierter Form. Die Idee ist, dass Werte mit einem Index versehen werden, um deren Inhalt deuten zu können. Der Index besteht aus einem Byte (also 256 möglichkeiten) und ist in der Tabelle vermerkt. Im The-Things-Network kann ein Parser für das Cayenne Format aktiviert werden. Dieser liest die Binär-Daten und stellt sie im JSON Format zur verfügung.
+
+Beispielsweise wird ein Temperaturwert von 23.9°C mit Cayenne index 12 übermittelt. Im TTN sieht der decodierte Payload wie folgt aus:
+``` json
+{ "temperature_12": 23.9 }
+```
+Der Datentyp (Temperatur) wird mit einem String beschrieben und der Index (12) angehängt. Die Daten befinden sich im Value der JSON Nachricht.
 
 | Type              | Index | Data Size   | Data Resolution per bit           |
 |-------------------|-------|-------------|-----------------------------------|
@@ -124,9 +131,9 @@ Für das übermitteln von Daten nach dem Cayenne Standard, stellt die Erweiterun
 Für jeden Unterstützten Datentyp gibt es einen eigenen Block. Bei all diesen Blöcken wird zu beginn geprüft, ob im Buffer noch Platz ist. Sollte der Platz nicht reichen, werden die entsprechenden Daten nicht angefügt.
 
 ### Skalierung
-
+Der Skalierungsblock passt den Wert and den Cayenne Bereich an. Für den micro:bit sind die analogen Werte im Bereich von *0* bis *1023*.
 ```blocks
-IoTCube.scaleToCayenne(795)
+IoTCube.addAnalogInput(IoTCube.scaleToCayenne(795), 1)
 ```
 
 ### Analog Input
@@ -147,6 +154,7 @@ IoTCube.addAnalogInput(pins.analogReadPin(AnalogPin.P0), 1, true)
 IoTCube.addIlluminance(pins.analogReadPin(AnalogPin.P1), 1)
 ```
 
+
 ### Beschleunigungssensor
 Beschleunigungsdaten von Sensor auf dem micro:bit können direkt dem Block übergeben werden.
 ```blocks
@@ -163,9 +171,7 @@ IoTCube.addGPS(47.0748, 12.6852, 3798, 1)
 Ein Downlink im Cayenne Format ist im Prinzip wie bei den Analog Werten aufgebaut. Es können 256 unterscheidbare Kanäle verwendet werden. Die Kanäle sind jeweils im Format `value_XY` aufgebaut, wobei XY eine Zahl von 0 bis 255 ist.
 
 ```json
-{
-    "value_10": 1
-}
+{ "value_10": 1 }
 ```
 
 ------------------------------------------------

@@ -23,11 +23,11 @@ Dieses Beispiel zeigt eine Routine, welche alle 5 Minuten bei einer erfolgreiche
 ```blocks
 loops.everyInterval(300000, function () {
     if (IoTCube.getStatus(eSTATUS_MASK.JOINED)) {
-        IoTCube.addAnalogInput(pins.analogReadPin(AnalogPin.P0), Channels.One)
-        IoTCube.addIlluminance(pins.analogReadPin(AnalogPin.P1), Channels.Five)
-        IoTCube.addTemperature(input.temperature(), Channels.Three)
-        IoTCube.addIlluminance(input.lightLevel(), Channels.Four)
-        IoTCube.SendBuffer(IoTCube.getCayenne(), Channels.One)
+        IoTCube.addAnalogInput(pins.analogReadPin(AnalogPin.P0), 1)
+        IoTCube.addIlluminance(pins.analogReadPin(AnalogPin.P1), 5)
+        IoTCube.addTemperature(input.temperature(), 3)
+        IoTCube.addIlluminance(input.lightLevel(), 4)
+        IoTCube.SendBuffer(IoTCube.getCayenne())
     }
 })
 ```
