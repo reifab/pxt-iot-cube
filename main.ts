@@ -99,10 +99,7 @@ namespace IoTCube {
      * Device Control
      */
 
-    //% blockId=DeviceStatusSet
-    //% block="Set Device Status Bit %mask to %state"
-    //% group="Device"
-    function setStatus(mask: eSTATUS_MASK, state: number){
+    export function setStatus(mask: eSTATUS_MASK, state: number){
         if (state){
             status = status | mask
         }
@@ -268,11 +265,13 @@ namespace IoTCube {
     }
 
     //% blockId="LoRa_Send_String"
-    //% block="Send | string %data on channel %chanNum"
+    //% block="Send | string %data || on f-Port %fport"
     //% group="Send"
     //% data.shadowOptions.toString=true
-    export function SendStr(data: string, chanNum: Channels,) {
-        writeATCommand("SEND", chanNum + ":" + data)
+    //% fport.min=1
+    //% fport.max=223
+    export function SendStr(data: string, fport: number,) {
+        writeATCommand("SEND", fport + ":" + data)
     }
 
     /**
@@ -281,11 +280,14 @@ namespace IoTCube {
      * @param chaNum is the LoRa channel used during transmit
     */
     //% blockId="LoRa_Send_Buffer"
-    //% block="Send | Buffer %data on channel %chanNum"
+    //% block="Send | Buffer %data || on f-Port %fport"
     //% group="Send"
     //% data.shadow="CayenneLPP_GetBuffer"
-    export function SendBuffer(data: Buffer=getCayenne(), chanNum: Channels,) {
-        writeATCommand("SEND", chanNum + ":" + data.toHex())
+    //% fport.min=1
+    //% fport.max=223
+    //%fport.defl=1
+    export function SendBuffer(data: Buffer=getCayenne(), fport?: number,) {
+        writeATCommand("SEND", fport + ":" + data.toHex())
     }
 
 

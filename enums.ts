@@ -47,49 +47,6 @@ enum eBands {
     AS923
 }
 
-enum Channels {
-    //% block="One"    
-    One = 1,
-    //% block="Two"
-    Two = 2,
-    //% block="Three"
-    Three = 3,
-    //% block="Four"
-    Four = 4,
-    //% block="Five"
-    Five = 5,
-    //% block="Six"
-    Six = 6,
-    //% block="Seven"
-    Seven = 7,
-    //% block="Eight"
-    Eight = 8,
-    //% block="Nine"
-    Nine = 9,
-    //% block="Ten"
-    Ten = 10,
-    //% block="Eleven"
-    Eleven = 11,
-    //% block="Twelve"
-    Twelve = 12,
-    //% block="Thirteen"
-    Thirteen = 13,
-    //% block="Fourteen"
-    Fourteen = 14,
-    //% block="fifteen"
-    Fifteen = 15,
-    //% block="Sixteen"
-    Sixteen = 16,
-    //% block="Seventeen"
-    Seventeen = 17,
-    //% block="Eighteen"
-    Eighteen = 18,
-    //% block="Nineteen"
-    Nineteen = 19,
-    //% block="Twenty"
-    Twenty = 20
-}
-
 enum eRUI3_CMD {
     VER = "VER",
     SLEEP = "SLEEP",
@@ -149,6 +106,8 @@ enum eSTATUS_MASK {
     JOINED = 0x40,
     NJM = 0x80,
 
-    ALL = 0xFF
+    BUFFER_FULL = 0x1000,
+
+    ALL = 0xFFFF
 }
 
