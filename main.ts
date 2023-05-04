@@ -188,64 +188,70 @@ namespace IoTCube {
      * Configure connection parameters. The data is stored on the device.
     */
     //% blockId="OTAASetup"
-    //% block="OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzy Band %Band Class %devClass"
+    //% block="OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzy Band %Band Class %devClass || Overwrite %overwrite"
     //% devClass.defl="A"
+    //% overwrite.defl=false
     //% Band.defl=eBands.EU868
     //% subcategory="Configuration" group="Setup" weight=100
-    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string, Band: eBands, devClass: string = "A") {
-        setStatus(eSTATUS_MASK.SETUP, 1)
-        setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.NJM, "1")              //Set activation to OTAA
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.CLASS, devClass)       //Set class
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.BAND, Band.toString()) 
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.DEVEUI, DevEUI)
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.APPEUI, AppEUI)
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.APPKEY, AppKey)
-        basic.pause(100)
-        resetModule()
-        basic.pause(300)
-        if(getParameter(eRUI3_PARAM.DEVEUI) == DevEUI){     // check written values
-            setEvent(eRAK_EVT.SETUP_SUCCECSS)
+    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string, Band: eBands, devClass: string = "A", overwrite?: boolean) {
+        if(overwrite){
+            setStatus(eSTATUS_MASK.SETUP, 1)
+            setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.NJM, "1")              //Set activation to OTAA
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.CLASS, devClass)       //Set class
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.BAND, Band.toString()) 
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.DEVEUI, DevEUI)
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.APPEUI, AppEUI)
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.APPKEY, AppKey)
+            basic.pause(100)
+            resetModule()
+            basic.pause(300)
+            if(getParameter(eRUI3_PARAM.DEVEUI) == DevEUI){     // check written values
+                setEvent(eRAK_EVT.SETUP_SUCCECSS)
+            }
+            setStatus(eSTATUS_MASK.SETUP, 0)
         }
-        setStatus(eSTATUS_MASK.SETUP, 0)
     }
 
     /**
      * Configure connection parameters. The data is stored on the device.
     */
     //% blockId="ABPSetup"
-    //% block="ABP Setup | Device Address %DEVADDR Application Session Key %APPSKEY Network Session Key %NWKSKEY Frequenzy Band %Band Class %devClass"
+    //% block="ABP Setup | Device Address %DEVADDR Application Session Key %APPSKEY Network Session Key %NWKSKEY Frequenzy Band %Band Class %devClass || Overwrite %overwrite"
     //% devClass.defl="A"
+    //% overwrite.defl=false
     //% Band.defl=eBands.EU868
     //% subcategory="Configuration" group="Setup"
-    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string, Band: eBands, devClass: string="A") {
-        setStatus(eSTATUS_MASK.SETUP, 1)
-        setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.NJM, "0")              //Set activation to ABP
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.CLASS, devClass)       //Set class
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.BAND, Band.toString())
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.DEVADDR, DEVADDR)
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.APPSKEY, APPSKEY)
-        basic.pause(50)
-        setParameter(eRUI3_PARAM.NWKSKEY, NWKSKEY)
-        basic.pause(100)
-        resetModule()
-        basic.pause(300)
-        if (getParameter(eRUI3_PARAM.DEVADDR) == DEVADDR) {     // check written values
-            setEvent(eRAK_EVT.SETUP_SUCCECSS)
+    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string, Band: eBands, devClass: string = "A", overwrite?: boolean) {
+        if(overwrite){
+            setStatus(eSTATUS_MASK.SETUP, 1)
+            setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.NJM, "0")              //Set activation to ABP
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.CLASS, devClass)       //Set class
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.BAND, Band.toString())
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.DEVADDR, DEVADDR)
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.APPSKEY, APPSKEY)
+            basic.pause(50)
+            setParameter(eRUI3_PARAM.NWKSKEY, NWKSKEY)
+            basic.pause(100)
+            resetModule()
+            basic.pause(300)
+            if (getParameter(eRUI3_PARAM.DEVADDR) == DEVADDR) {     // check written values
+                setEvent(eRAK_EVT.SETUP_SUCCECSS)
+            }
+            setStatus(eSTATUS_MASK.SETUP, 0)
         }
-        setStatus(eSTATUS_MASK.SETUP, 0)
     }
     
     /**
@@ -298,12 +304,12 @@ namespace IoTCube {
         let i = 0
         let hByte = 0
         let lByte = 0
-
         let tmp = getParameter(eRUI3_PARAM.RECV)
         let downlink = tmp.split(":")[1]
         RxPort = parseInt(tmp.split(":")[0])
 
         // extract bytes from string
+        RxData = [];
         while (i < downlink.length) {
             RxData.push(parseInt(downlink.substr(i, 2), 16))
             i += 2
