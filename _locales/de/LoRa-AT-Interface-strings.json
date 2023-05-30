@@ -1,8 +1,8 @@
 {
-  "IoTCube.ABP_Setup|block": "ABP Setup | Device Address %DEVADDR Application Session Key %APPSKEY Network Session Key %NWKSKEY Frequenzband %Band Klasse %devClass",
+  "IoTCube.ABP_Setup|block": "ABP Setup | Device Address %DEVADDR Application Session Key %APPSKEY Network Session Key %NWKSKEY Frequenzband %Band Klasse %devClass || Überschreiben %overwrite",
   "IoTCube.DownlinkEvent|block": "Downlink Event", 
   "IoTCube.LoRa_Join|block": "LoRa Netzwerk-Verbindung | Verbinde %join Automatisch %auto_join Neuversuch-Interval %interval Neuversuche %attempts",
-  "IoTCube.OTAA_Setup|block": "OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzband %Band Klasse %devClass",
+  "IoTCube.OTAA_Setup|block": "OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzband %Band Klasse %devClass || Überschreiben %overwrite",
   "IoTCube.SendBuffer|block": "Sende | Buffer %data || auf F-Port %fport",
   "IoTCube.SendStr|block": "Sende | string %data || auf F-Port %fport",
   "IoTCube.addAccelerometer|block": "Füge Accelerometer | x: %x y: %y z: %z auf Kanal %channel hinzu",
