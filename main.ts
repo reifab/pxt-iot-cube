@@ -23,7 +23,6 @@ loops.everyInterval(1500, function() {
 //% color="#00796b" icon="\uf1eb" block="IoT Cube"
 namespace IoTCube {
     let message: string= ""
-    let RxData: number[]= []
     let RxPort: number=0
     let evtMessage: string = ""
     let status: number = 0
@@ -304,12 +303,12 @@ namespace IoTCube {
         let i = 0
         let hByte = 0
         let lByte = 0
+        let RxData: number[] = []
         let tmp = getParameter(eRUI3_PARAM.RECV)
         let downlink = tmp.split(":")[1]
         RxPort = parseInt(tmp.split(":")[0])
 
         // extract bytes from string
-        RxData = [];
         while (i < downlink.length) {
             RxData.push(parseInt(downlink.substr(i, 2), 16))
             i += 2
