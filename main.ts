@@ -29,7 +29,7 @@ namespace IoTCube {
     export let MCP23008 = new MCP(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
-    serial.setRxBufferSize(32)
+    serial.setRxBufferSize(42)
 
     /**
      * Communication
