@@ -106,8 +106,8 @@ enum eSTATUS_MASK {
     JOINED = 0x40,
     NJM = 0x80,
 
-    BUFFER_FULL = 0x1000,
+    BUFFER_FULL = 0x10000,
 
-    ALL = 0xFFFF
+    ALL = 0x1FFFF
 }
 
