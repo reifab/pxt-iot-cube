@@ -31,7 +31,9 @@ enum eRAK_EVT {
 }
 
 enum eBool {
+    //% block="No" 
     disable,   //disable represents 0
+    //% block="Yes"
     enable     //enable represents 1
 }
 

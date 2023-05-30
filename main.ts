@@ -189,10 +189,10 @@ namespace IoTCube {
     //% blockId="OTAASetup"
     //% block="OTAA Setup | AppEUI %AppEUI DevEUI %DevEUI AppKey %AppKey Frequenzy Band %Band Class %devClass || Overwrite %overwrite"
     //% devClass.defl="A"
-    //% overwrite.defl=false
+    //% overwrite.defl=disable
     //% Band.defl=eBands.EU868
     //% subcategory="Configuration" group="Setup" weight=100
-    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string, Band: eBands, devClass: string = "A", overwrite?: boolean) {
+    export function OTAA_Setup(AppEUI: string, DevEUI: string, AppKey: string, Band: eBands, devClass: string = "A", overwrite?: eBool) {
         if(overwrite){
             setStatus(eSTATUS_MASK.SETUP, 1)
             setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN
@@ -224,10 +224,10 @@ namespace IoTCube {
     //% blockId="ABPSetup"
     //% block="ABP Setup | Device Address %DEVADDR Application Session Key %APPSKEY Network Session Key %NWKSKEY Frequenzy Band %Band Class %devClass || Overwrite %overwrite"
     //% devClass.defl="A"
-    //% overwrite.defl=false
+    //% overwrite.defl=disable
     //% Band.defl=eBands.EU868
     //% subcategory="Configuration" group="Setup"
-    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string, Band: eBands, devClass: string = "A", overwrite?: boolean) {
+    export function ABP_Setup(DEVADDR: string, APPSKEY: string, NWKSKEY: string, Band: eBands, devClass: string = "A", overwrite?: eBool) {
         if(overwrite){
             setStatus(eSTATUS_MASK.SETUP, 1)
             setParameter(eRUI3_PARAM.NWM, "1")              //Set work mode LoRaWAN

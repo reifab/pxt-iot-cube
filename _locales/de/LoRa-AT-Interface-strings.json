@@ -45,6 +45,8 @@
   "eCAYENNE_TYPES.Illuminance|block": "Helligkeit",
   "eCAYENNE_TYPES.Presence|block": "Anwesenheit",
   "eCAYENNE_TYPES.Temperature|block": "Temperatur",
+  "eBool.enable|block": "Ja",
+  "eBool.disable|block": "Nein",
   "{id:category}IoTCube": "IoTCube",
   "{id:group}Device": "Gerät",
   "{id:group}Payload": "Nachricht",
