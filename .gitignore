@@ -12,3 +12,4 @@ _site
 Gemfile.lock
 _build/*
 docs/.sass-cache/*
+.DS_Store
