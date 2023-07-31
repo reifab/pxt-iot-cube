@@ -1,10 +1,6 @@
-# IoT-Würfel
+![IoT-Cube-Poster](assets/IoT-Cube-Poster.png)
 
-Das ist die Dokumentation und Anleitung für die Makecode-Erweiterung IoT-Cube
-
-- [Blöcke](blocks.md)
-
-- [Beispiele](examples.md)
+Das ist die Dokumentation und Anleitung für die Makecode-Erweiterung IoT-Cube.
 
 ## Als Erweiterung verwenden
 
@@ -15,7 +11,7 @@ Dieses Repository kann als **Erweiterung** in MakeCode hinzugefügt werden.
 * klicke auf **Erweiterungen** unter dem Zahnrad-Menü
 * nach **https://github.com/paeber/lora-at-interface** suchen und importieren
 
-## Dieses Projekt bearbeiten ![Build Status Abzeichen](https://github.com/paeber/lora-at-interface/workflows/MakeCode/badge.svg)
+## Dieses Projekt bearbeiten 
 
 Um dieses Repository in MakeCode zu bearbeiten.
 
