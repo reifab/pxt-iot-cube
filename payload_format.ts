@@ -125,8 +125,7 @@ namespace IoTCube {
     //% block="Add Analog Input %data on Channel %channel|| Convert range %convRange""
     //% subcategory="CayenneLPP" group="Payload" weight=120
     //% convRange.defl=false
-    //% data.min=-327.68
-    //% data.max=327.67
+    //% data.min=-327, data.max=327
     //% channel.min=0, channel.max=255, channel.defl=1
     export function addAnalogInput(data: number, channel: number, convRange?:boolean) {
         if (checkBufferSpace(cCayenne.AnalogInput.size)) {
@@ -145,11 +144,8 @@ namespace IoTCube {
     //% blockId="CayenneLPP_AnalogOutput"
     //% block="Add Analog Output %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload"
-    //% data.min=-327.68
-    //% data.max=327.67
-    //% channel.min=0
-    //% channel.max=255
-    //% channel.defl=1
+    //% data.min=-327, data.max=327
+    //% channel.min=0, channel.max=255, channel.defl=1
     export function addAnalogOutput(data: number, channel: number) {
         if (checkBufferSpace(cCayenne.AnalogOutput.size)) {
             Payload.add(channel)
@@ -164,9 +160,7 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Temperature"
     //% block="Add Temperature %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload" weight=90
-    //% channel.min=0
-    //% channel.max=255
-    //% channel.defl=1
+    //% channel.min=0, channel.max=255, channel.defl=1
     export function addTemperature(data: number, channel: number){
         if (checkBufferSpace(cCayenne.Temperature.size)) {
             let temp = 0
@@ -185,9 +179,7 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Humidity"
     //% block="Add Humidity %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload" weight=90
-    //% channel.min=0
-    //% channel.max=255
-    //% channel.defl=1
+    //% channel.min=0, channel.max=255, channel.defl=1
     export function addHumidity(data: number, channel: number) {
         if (checkBufferSpace(cCayenne.Humidity.size)) {
             Payload.add(channel)
@@ -200,9 +192,7 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Illuminance"
     //% block="Add Illuminance %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload"
-    //% channel.min=0
-    //% channel.max=255
-    //% channel.defl=1
+    //% channel.min=0, channel.max=255, channel.defl=1
     export function addIlluminance(data: number, channel: number) {
         if (checkBufferSpace(cCayenne.Illuminance.size)) {
             Payload.add(channel)
@@ -216,9 +206,7 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Presence"
     //% block="Add Presence %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload"
-    //% channel.min=0
-    //% channel.max=255
-    //% channel.defl=1
+    //% channel.min=0, channel.max=255, channel.defl=1
     export function addPresence(data: number, channel: number) {
         if (checkBufferSpace(cCayenne.Presence.size)) {
             Payload.add(channel)
@@ -230,9 +218,7 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Accelerometer"
     //% block="Add Accelerometer | x: %x y: %y z: %z on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload" weight=50
-    //% channel.min=0
-    //% channel.max=255
-    //% channel.defl=1
+    //% channel.min=0, channel.max=255, channel.defl=1
     export function addAccelerometer(x: number, y: number, z: number, channel: number) {
         if (checkBufferSpace(cCayenne.Accelerometer.size)) {
             Payload.add(channel)
@@ -252,9 +238,7 @@ namespace IoTCube {
     //% blockId="CayenneLPP_Barometer"
     //% block="Add Barometer %data on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload"
-    //% channel.min=0
-    //% channel.max=255
-    //% channel.defl=1
+    //% channel.min=0, channel.max=255, channel.defl=1
     export function addBarometer(data: number, channel: number) {
         if (checkBufferSpace(cCayenne.Barometer.size)) {
             Payload.add(channel)
@@ -268,9 +252,7 @@ namespace IoTCube {
     //% blockId="CayenneLPP_GPS"
     //% block="Add GPS | latitude: %latitude longitude: %longitude altitude: %meters on Channel %channel"
     //% subcategory="CayenneLPP" group="Payload"
-    //% channel.min=0
-    //% channel.max=255
-    //% channel.defl=1
+    //% channel.min=0, channel.max=255, channel.defl=1
     export function addGPS(latitude: number, longitude: number, meters: number, channel: number){
         if (checkBufferSpace(cCayenne.GPS.size)) {
             let lat = latitude * 10000;
