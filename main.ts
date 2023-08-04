@@ -1,6 +1,6 @@
 /**
 * IoT-Wuerfel
-* GBS St. Gallen, 2022
+* GBS St. Gallen, 2023
 *
 * Main IoTCube
 * This file defines the namespace "IoTCube" and impelemts all LoRa functions.
@@ -10,7 +10,7 @@
 /**
  * Loops for background tasks
  */
-basic.forever(function() {
+serial.onDataReceived("\r\n", function () {
     IoTCube.serialListener()
 })
 
