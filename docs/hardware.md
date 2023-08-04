@@ -6,6 +6,14 @@ Der IoT-Würfel besteht aus micro:bit, Erweiterungsboard und einem 3D-Druck Geh�
 | -------------------------------------- | ------------------------------------ |
 | ![Front Label](assets/Front Label.png) | ![Rear Label](assets/Rear Label.png) |
 
+## Grove Anschlüsse
+
+Die Grove Anschlüsse sind Teil eines verbreiteten Systems um verschiedenste Sensoren und Aktoren mit einem einheitlichen Kabel zu verbinden. Insgesamt 7 Grove Anschlüsse sind auf dem IoT-Würfel vorhanden. Die Anschlüsse J0, J1, J2 und J3 auf der linken Seite in der Abbildung sind für 3.3V Logik ausgelegt. Die rechte Seite mit J5, J6 und J7 sind auf 5V Logik.
+
+![IoT-Wuerfel-Top-Connections](assets/IoT-Wuerfel-Top-Connections-1160112.png)
+
+
+
 ## Seitenwände
 
 Die Wände des Würfels sind austauschbar. So können spezifische Anpassungen vorgenommen werden um die gewünschten Sensoren und Aktoren zu montieren.
