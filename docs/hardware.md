@@ -10,9 +10,21 @@ Der IoT-Würfel besteht aus micro:bit, Erweiterungsboard und einem 3D-Druck Geh�
 
 Die Grove Anschlüsse sind Teil eines verbreiteten Systems um verschiedenste Sensoren und Aktoren mit einem einheitlichen Kabel zu verbinden. Insgesamt 7 Grove Anschlüsse sind auf dem IoT-Würfel vorhanden. Die Anschlüsse J0, J1, J2 und J3 auf der linken Seite in der Abbildung sind für 3.3V Logik ausgelegt. Die rechte Seite mit J5, J6 und J7 sind auf 5V Logik.
 
-![IoT-Wuerfel-Top-Connections](assets/IoT-Wuerfel-Top-Connections-1160112.png)
+![deckel-label-white](assets/deckel-label-white.png)
 
 
+
+| Anschluss | Logik | GPIO         | Beschreibung                                                 |
+| --------- | ----- | ------------ | ------------------------------------------------------------ |
+| **J0**    | 3.3 V | SDA<br />SCL | I2C Bus für das Anschliessen integrierter Module mit erweiterter Funktionalität. Geeignet für I2C Module wie kombinierte Sensoren von Temperatur & Luftfeuchtigkeit |
+| **J1**    | 3.3 V | P0<br />P14  | GPIO Pins vom micro:bit mit analog und digital Funktionalität. Geeignet für LED, Taster, Analog Sensoren, etc. |
+| **J2**    | 3.3 V | P1<br />P15  | GPIO Pins vom micro:bit mit analog und digital Funktionalität. Geeignet für LED, Taster, Analog Sensoren, etc. |
+| **J3**    | 3.3 V | P2<br />P16  | GPIO Pins vom micro:bit mit analog und digital Funktionalität. Geeignet für LED, Taster, Analog Sensoren, etc. |
+| **J5**    | 5 V   | SDA<br />SCL | I2C Bus mit 5 V Logik und Speisung.                          |
+| **J6**    | 5 V   | P0<br />P14  | GPIO Pins auf 5 V Logik angepasst. Geeignet für digitale Ein- und Ausgänge mit 5 V Logik. <br />**Info:** Signal ist identisch wie bei **J1** aber mit höherer Spannung. |
+| **J7**    | 5 V   | P1<br />P15  | GPIO Pins auf 5 V Logik angepasst. Geeignet für digitale Ein- und Ausgänge mit 5 V Logik. <br />**Info:** Signal ist identisch wie bei **J2** aber mit höherer Spannung. |
+
+> Der I2C Bus wird vom Würfel im Hintergrund verwendet. Zusätzliche Kommunikation auf dem Bus ist möglich aber die Adresse **0x20** darf nicht verwendet werden.
 
 ## Seitenwände
 
@@ -29,13 +41,11 @@ Auf der Rückseite befinden sich die Anschlüsse für die Speisung des Boards un
 
 ### Anschlüsse
 
-Auf der Rückseite befinden sich die Anschlüsse des Erweiterungsboards.
+Auf der Rückseite befinden sich weitere Anschlüsse des Erweiterungsboards. Darunter Antenne, Debug, Power und QWIIC.
 
 #### Schraubklemme
 
-Die Schraubklemme (grün) hat 4 Anschlüsse für Litzen. 
-
-Von links nach rechts:
+Die Schraubklemme (grün) hat 4 Anschlüsse für Litzen. Die Pins von links nach rechts:
 
 | Speisung +   | Speisung - (GND)               | Open Collector 1                                             | Open Collector 2                                             |
 | ------------ | ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -54,15 +64,15 @@ Ein Pin-Socket mit 10 Anschlüssen ermöglicht den Zugriff auf Interne Komponent
 | **Oben**  |    5V     |    3V3    | SWCLK | GND  | SWDIO  |
 | **Unten** | TX (UART) | RX (UART) | RESET | TDO  |  TDI   |
 
-Wobei die Positionsangaben davon ausgehen, dass der Würfel von der Rückseite betrachtet wird und auf der Bodenplatte steht.
+Wobei die Positionsangaben davon ausgehen, dass der Würfel von der Rückseite betrachtet wird und auf der Bodenplatte steht. Der 5V Pin ist Standardmässig über einen Solder-Jumper vom 5V Netz auf dem Board getrennt.
 
 ![Debug Label](assets/Debug Label.png)
-
-Der 5V Pin ist Standardmässig über einen Solder-Jumper vom 5V Netz auf dem Board getrennt.
 
 #### LoRa Antenne
 
 Die LoRa Antenne wird am SMA Stecker angeschraubt. Im Betrieb sollte immer eine Antenne angeschlossen sein zum Schutz des Funk Moduls. Das Modul ist für 868 MHz LoRa Kommunikation konfiguriert und muss mit einer passenden Antenne betrieben werden.
+
+> Das Verwenden des Würfels ohne Antenne kann das Funkmodul beschädigen
 
 #### QWIIC
 
