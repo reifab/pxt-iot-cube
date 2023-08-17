@@ -1,11 +1,9 @@
 {
-    "name": "LoRa-AT-Interface",
+    "name": "IoT-Würfel",
     "version": "1.0.0",
-    "description": "Communication with LoRa module",
+    "description": "Bibliothek für den IoT-Würfel",
     "dependencies": {
-        "core": "*",
-        "radio": "*",
-        "microphone": "*"
+        "core": "*"
     },
     "files": [
         "main.ts",
