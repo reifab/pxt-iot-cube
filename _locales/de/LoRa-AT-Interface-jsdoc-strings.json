@@ -24,8 +24,9 @@
   "IoTCube.setParameter": "Setze einen Parameter des LoRa Moduls.",
   "IoTCube.setParameter|param|typ": "Name des RUI3 Parameters",
   "IoTCube.setParameter|param|value": "Neuer Wert des Parameters",
-  "IoTCube.sleep": "Aktiviere den Schalfmodus (low-power) für eine bestimmte Zeit",
+  "IoTCube.sleep": "Aktiviere den Schalfmodus (low-power) für eine bestimmte Zeit. VERALTET: verwende stattdessen die Funktion Low-Power-Mode",
   "IoTCube.sleep|param|time": "Zeit in Milisekunden",
+  "IoTCube.lowPowerMode": "Konfiguration für den Low-Power-Mode",
   "IoTCube.watchdog": "Watchdog Process\r\nRuns periodically in background to check device status",
   "MCP_Defaults": "IoT-Wuerfel\r\nGBS St. Gallen, 2022\r\n* Port Expander\r\nThis file defines the class for the MCP23008 port expander.\r\nThe relevant functions are exported to the \"IoTCube\"-Namespace.",
   "eRAK_RC": "RAK3172 LoRa Module\r\nGBS St. Gallen, 2022"
