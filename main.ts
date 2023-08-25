@@ -162,9 +162,10 @@ namespace IoTCube {
         setStatus(eSTATUS_MASK.ALL, 0)
     }
 
-    /**
+
+    /** DEPRECATED RUI 4.0.5
      * Send LoRa module into low power mode without communication
-     * @param time in miliseconds how long to sleep
+     * @param time in miliseconds how long to sleep 
     */
     //% blockId=DeviceSleep
     //% block="LoRa sleep for %time ms"
@@ -176,6 +177,18 @@ namespace IoTCube {
             setStatus(eSTATUS_MASK.SLEEP, 1)
             setStatus(eSTATUS_MASK.READY, 0)
         }
+    }
+
+
+    /**
+     * Set the low power mode of the LoRa module
+     * @param lpm_state (0 = off, 1 = on)
+    */
+    //% blockId=DeviceLowPowerMode
+    //% block="LoRa LowPower Mode %lpm_state"
+    //% group="Device"
+    export function lowPowerMode(lpm_state: eBool) {
+        writeATCommand("LPM", lpm_state.toString())
     }
 
 
