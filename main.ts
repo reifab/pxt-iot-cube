@@ -1,6 +1,6 @@
 /**
 * IoT-Wuerfel
-* GBS St. Gallen, 2022
+* GBS St. Gallen, Smartfeld, 2023
 *
 * Main IoTCube
 * This file defines the namespace "IoTCube" and impelemts all LoRa functions.
@@ -26,6 +26,7 @@ namespace IoTCube {
     let RxPort: number=0
     let evtMessage: string = ""
     let status: number = 0
+    let events: number = 0
     export let MCP23008 = new MCP(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
@@ -42,6 +43,23 @@ namespace IoTCube {
     function readSerial(command: string) {
         return serial.readString()
     }
+
+    /**
+     * Run on start and configure IoT Cube
+     * 
+     * @param timereq
+     * @param lowPower
+     * @param logging
+    */
+    //% blockId=InitializeIoTCube
+    //% block="IoT Cube setup | Time request %timereq  Low power mode %lowPower Log every LoRa message %logging"
+    //% timereq.defl=eBool.enable lowPower.defl=eBool.enable logging.defl=eBool.disable
+    export function initIoTCube(timereq: eBool, lowPower: eBool, logging: eBool){
+        let version = IoTCube.getParameter(eRUI3_PARAM.VERSION)
+        IoTCube.setTimeRequest(timereq)
+        IoTCube.lowPowerMode(lowPower)
+    }
+
 
     //% blockId=GetLatestEventMessage
     //% block="Get event message"
@@ -118,11 +136,11 @@ namespace IoTCube {
     }
 
     function setEvent(event: eRAK_EVT) {
-        status = status | (0x01 << (event + 8))
+        events = events | (0x01 << (event))
     }
 
     function clearEvent(event: eRAK_EVT) {
-        status = status & (~(0x01 << (event + 8)))
+        events = events & (~(0x01 << (event)))
     }
 
     /**
@@ -134,7 +152,7 @@ namespace IoTCube {
     //% block="Is event %event set?"
     //% group="Device"
     export function checkEvent(event: eRAK_EVT): boolean {
-        if (status & (0x01 << (event + 8))) {
+        if (events & (0x01 << (event))) {
             clearEvent(event)
             return true
         }
@@ -189,6 +207,40 @@ namespace IoTCube {
     //% group="Device"
     export function lowPowerMode(lpm_state: eBool) {
         writeATCommand("LPM", lpm_state.toString())
+    }
+
+
+    /**
+     * Request time from LoRa network on next communication
+    */
+    //% blockId=TimeRequest
+    //% block="Request time from Network %value"
+    //% group="Device"
+    export function setTimeRequest(value: eBool) {
+        writeATCommand("TIMEREQ", value.toString())
+    }
+
+
+    /**
+     * Read internal time as HHh:MMm:SSs
+    */
+    //% blockId=InternalTime
+    //% block="Get internal time"
+    //% group="Device"
+    export function getTime() {
+        let res = IoTCube.getParameter(eRUI3_PARAM.LTIME)
+        return res.split(" on ")[0]
+    }
+
+    /**
+     * Read internal date as MM/DD/YYYY
+    */
+    //% blockId=InternalDate
+    //% block="Get internal date"
+    //% group="Device"
+    export function getDate() {
+        let res = IoTCube.getParameter(eRUI3_PARAM.LTIME)
+        return res.split(" on ")[1]
     }
 
 
@@ -446,6 +498,12 @@ namespace IoTCube {
                     }
                     else if (res.includes("+EVT:RX_2")) {
                         setEvent(eRAK_EVT.RX_2)
+                    }
+                    else if (res.includes("+EVT:TX_DONE")) {
+                        setEvent(eRAK_EVT.TX_DONE)
+                    }
+                    else if (res.includes("+EVT:TIMEREQ_OK")) {
+                        setEvent(eRAK_EVT.TIMEREQ_OK)
                     }
                 }
                 else {

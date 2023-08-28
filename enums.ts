@@ -1,6 +1,6 @@
 /**
  * RAK3172 LoRa Module
- * GBS St. Gallen, 2022
+ * GBS St. Gallen, Smartfeld, 2023
  */
 
 
@@ -26,6 +26,8 @@ enum eRAK_EVT {
     SEND_CONFIRMED_OK,
     RX_1,
     RX_2,
+    TX_DONE,
+    TIMEREQ_OK,
     SETUP_FAILED,
     SETUP_SUCCECSS,
 }
