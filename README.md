@@ -1,4 +1,4 @@
-> Diese Seite bei [https://paeber.github.io/lora-at-interface/](https://paeber.github.io/lora-at-interface/) öffnen
+> Diese Seite bei [https://smartfeld.github.io/pxt-iot-cube/](https://smartfeld.github.io/pxt-iot-cube/) öffnen
 
 
 
@@ -9,15 +9,15 @@ Dieses Repository kann als **Erweiterung** in MakeCode hinzugefügt werden.
 * öffne [https://makecode.microbit.org/](https://makecode.microbit.org/)
 * klicke auf **Neues Projekt**
 * klicke auf **Erweiterungen** unter dem Zahnrad-Menü
-* nach **https://github.com/paeber/lora-at-interface** suchen und importieren
+* nach **https://github.com/smartfeld/pxt-iot-cube** suchen und importieren
 
-## Dieses Projekt bearbeiten ![Build Status Abzeichen](https://github.com/paeber/lora-at-interface/workflows/MakeCode/badge.svg)
+## Dieses Projekt bearbeiten ![Build Status Abzeichen](https://github.com/smartfeld/pxt-iot-cube/workflows/MakeCode/badge.svg)
 
 Um dieses Repository in MakeCode zu bearbeiten.
 
 * öffne [https://makecode.microbit.org/](https://makecode.microbit.org/)
 * klicke auf **Importieren** und dann auf **Importiere URL**
-* füge **https://github.com/paeber/lora-at-interface** ein und klicke auf Importieren
+* füge **https://github.com/smartfeld/pxt-iot-cube** ein und klicke auf Importieren
 
 ### Testen von Github Pages
 
