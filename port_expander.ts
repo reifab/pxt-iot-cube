@@ -1,6 +1,6 @@
 /**
 * IoT-Wuerfel
-* GBS St. Gallen, 2022
+* Smartfeld, 2024
 * 
 * Port Expander
 * This file defines the class for the MCP23008 port expander.

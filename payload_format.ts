@@ -1,6 +1,6 @@
 /**
 * IoT-Wuerfel
-* GBS St. Gallen, 2022
+* Smartfeld, 2024
 *
 * CayenneLPP
 * This file implements the CayenneLPP format for the data transmission.
@@ -122,15 +122,19 @@ namespace IoTCube {
      * @param channel is the target channel
     */
     //% blockId="CayenneLPP_AnalogInput"
-    //% block="Add Analog Input %data on Channel %channel|| Convert range %convRange""
+    //% block="Add Analog Input %data on Channel %channel with value < %scale|| Convert range %convRange""
     //% subcategory="CayenneLPP" group="Payload" weight=120
     //% convRange.defl=false
     //% data.min=-327, data.max=327
     //% channel.min=0, channel.max=255, channel.defl=1
-    export function addAnalogInput(data: number, channel: number, convRange?:boolean) {
+    //% scale.defl=eCAYENNE_SCALE.scale_1
+    export function addAnalogInput(data: number, channel: number, scale?: eCAYENNE_SCALE, convRange?:boolean) {
         if (checkBufferSpace(cCayenne.AnalogInput.size)) {
             if (convRange) {
                 data = scaleToCayenne(data)
+            }
+            else {
+                data = data / scale;
             }
             Payload.add(channel)
             Payload.add(cCayenne.AnalogInput.code)

@@ -1,6 +1,6 @@
 /**
 * IoT-Wuerfel
-* GBS St. Gallen, 2022
+* Smartfeld, 2024
 *
 * Main IoTCube
 * This file defines the namespace "IoTCube" and impelemts all LoRa functions.
@@ -263,8 +263,10 @@ namespace IoTCube {
     //% blockId="Network_Join"
     //% block="LoRa Network Join | Join %join On Power-up %auto_join Reattempt interval %interval attempts %attempts"
     //% interval.defl=10, attempts.defl=8
+    //% join.defl=eBool.enable
+    //% auto_join.defl=eBool.enable
     //% subcategory="Configuration" group="Setup" weight=120
-    export function LoRa_Join(join: eBool = eBool.enable, auto_join: eBool = eBool.enable, interval?: number, attempts?: number) {
+    export function LoRa_Join(join: eBool, auto_join: eBool, interval?: number, attempts?: number) {
         writeATCommand("JOIN", join + ":" + auto_join + ":" + interval + ":" + attempts )
         setStatus(eSTATUS_MASK.CONNECT, 1)
     }

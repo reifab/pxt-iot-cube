@@ -3,6 +3,17 @@
 const clppAnalogMin = -327.68
 const clppAnalogMax = 327.67
 
+enum eCAYENNE_SCALE {
+    //% block="327 (:1)"
+    scale_1 = 1,
+    //% block="3k (:10)"
+    scale_10 = 10,
+    //% block="30k (:100)"    
+    scale_100 = 100,
+    //% block="300k (:1000)"   
+    scale_1000 = 1000
+}
+
 enum eCAYENNE_TYPES {
     //% block="Digital Input"   // 1 byte
     DigitalInput = 0,          

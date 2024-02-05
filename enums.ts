@@ -1,6 +1,6 @@
 /**
  * RAK3172 LoRa Module
- * GBS St. Gallen, 2022
+ * Smartfeld, 2024
  */
 
 
