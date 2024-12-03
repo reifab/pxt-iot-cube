@@ -6,6 +6,7 @@
 * This file implements the CayenneLPP format for the data transmission.
 */
 
+//% groups="['Prepare to Send', 'Send', 'Receive', 'Device', 'Pins']"
 namespace IoTCube {
     /**
      * Buffer CayenneLPP
@@ -273,4 +274,6 @@ namespace IoTCube {
             Payload.add(alt);
         }
     }
+
+
 }
