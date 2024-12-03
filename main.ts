@@ -308,11 +308,11 @@ namespace IoTCube {
     */
     //% blockId="LoRa_Send_Buffer"
     //% block="Send | Buffer %data || on f-Port %fport"
-    //% group="Send"
+    //% subcategory="CayenneLPP" group="Send"
     //% data.shadow="CayenneLPP_GetBuffer"
     //% fport.min=1
     //% fport.max=223
-    //%fport.defl=1
+    //% fport.defl=1
     export function SendBuffer(data: Buffer=getCayenne(), fport?: number,) {
         writeATCommand("SEND", fport + ":" + data.toHex())
     }
