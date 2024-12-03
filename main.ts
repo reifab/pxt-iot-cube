@@ -271,23 +271,22 @@ namespace IoTCube {
     }
 
     //% blockId="CayenneLPP_Presence_used_for_bool_simplified_interface"
-    //% block="Put the state %data in the drawer %drawer"
-    //% weight=10
+    //% block="Add binary value %data with the ID %id"
     //% group="Prepare to Send"
     //% data.min=0
     //% data.max=1
-    //% drawer.min=0
-    //% drawer.max=4
-    //% drawer.defl=1
-    export function addStateToDrawer(data: number, drawer: number) {
-        // Limit drawer to the range 0 to 4
-        const validDrawer = Math.min(Math.max(drawer, 0), 4);
+    //% id.min=0
+    //% id.max=4
+    //% id.defl=1
+    export function addBinary(data: number, id: number) {
+        // Limit ID to the range 0 to 4
+        const validID = Math.min(Math.max(id, 0), 4);
 
         // Limit data to the range 0 to 1
         const validData = Math.min(Math.max(data, 0), 1);
 
         // Calculate the channel
-        const channel = 251 + validDrawer; // Channels 251 to 255 are reserved for this purpose
+        const channel = 251 + validID; // Channels 251 to 255 are reserved for this purpose
 
         addPresence(data, channel);
     }
