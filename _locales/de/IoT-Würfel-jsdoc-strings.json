@@ -12,6 +12,7 @@
   "IoTCube.addAnalogInput": "Füge Analog-Eingang zum Buffer hinzu. Bereich von -327.68 bis 327.67",
   "IoTCube.addAnalogInput|param|channel": "Cayenne Kanal",
   "IoTCube.addAnalogInput|param|data": "Zahlenwert",
+  "IoTCube.addBinary": "Füge binären Wert (0 oder 1) mit einer Identifikationsnummer (0 bis 4) hinzu.",
   "IoTCube.addBinary|param|data": "0 oder 1",
   "IoTCube.addBinary|param|id": "Identifikationsnummer",
   "IoTCube.checkEvent": "Return ist Wahr wenn das Event aufgetreten ist.\r\nDas Event wird nach dem Lesen gelöscht.",
