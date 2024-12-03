@@ -44,141 +44,7 @@ namespace IoTCube {
         return serial.readString()
     }
 
-    //% blockId=GetLatestEventMessage
-    //% block="Get event message"
-    //% subcategory="Configuration" group="Device"
-    export function getEventMessage() {
-        return evtMessage
-    }
-    
-    //% blockId=GetLatestMessage
-    //% block="Get serial message"
-    //% subcategory="Configuration" group="Device"
-    export function getSerialMessage() {
-        return message
-    }
-
-    //% blockId=writeATCommand
-    //% block="AT | Command %typ Paramter %value"
-    //% subcategory="Configuration" group="Device"
-    export function writeATCommand(typ: string, value: string){
-        let command = "AT+" + typ + "=" + value
-        writeSerial(command)
-    }
-
-    /**
-     * Read parameter from LoRa module
-     * @param typ RUI3 command to send
-    */
-    //% blockId=getParameter
-    //% block="Get | Parameter %typ"
-    //% subcategory="Configuration" group="Device"
-    export function getParameter(typ: eRUI3_PARAM) {
-        let command = "AT+" + strRAK_PARAM[typ] + "=?"       
-        basic.pause(30)
-        writeSerial(command)
-        basic.pause(70)
-        return message.replace("AT+" + strRAK_PARAM[typ] + "=", "")
-    }
-
-    /**
-     * Set parameter of LoRa module
-     * @param typ RUI3 parameter to Set
-     * @param value new value of parameter
-    */
-    //% blockId=setParameter
-    //% block="Set | Parameter %typ to %value"
-    //% subcategory="Configuration" group="Device"
-    export function setParameter(typ: eRUI3_PARAM, value: string) {
-        let command = "AT+" + strRAK_PARAM[typ] + "=" + value
-        writeSerial(command)
-    }
-
-
-    /********************************************************************************
-     * Device Control
-     */
-
-    export function setStatus(mask: eSTATUS_MASK, state: number){
-        if (state){
-            status = status | mask
-        }
-        else {
-            status = status & (~mask)
-        }
-    }
-
-    //% blockId=DeviceStatusGet
-    //% block="Get Device Status Bit %mask"
-    //% group="Device"
-    export function getStatus(mask: eSTATUS_MASK): boolean {
-        if (status & mask){
-            return true
-        }
-        return false
-    }
-
-    function setEvent(event: eRAK_EVT) {
-        status = status | (0x01 << (event + 8))
-    }
-
-    function clearEvent(event: eRAK_EVT) {
-        status = status & (~(0x01 << (event + 8)))
-    }
-
-    /**
-     * Returns true of selected event was triggered and not yet read.
-     * The event is cleared after reading.
-     * @param event is the type of event
-    */
-    //% blockId="checkRAKEvent"
-    //% block="Is event %event set?"
-    //% group="Device"
-    export function checkEvent(event: eRAK_EVT): boolean {
-        if (status & (0x01 << (event + 8))) {
-            clearEvent(event)
-            return true
-        }
-        return false
-    }
-
-    /**
-     * Execute a reset on LoRa module (soft or hard)
-     * Configuration is NOT ereased.
-    */
-    //% blockId=DeviceReset
-    //% block="Reset LoRa || Hard-Reset %hardReset"
-    //% hardReset.shadow="toggleOnOff"
-    //% hardReset.defl=false
-    //% group="Device"
-    export function resetModule(hardReset?: boolean) {
-        if(hardReset){
-            MCP23008.setPin(MCP_Pins.RAK_RST, true)
-            basic.pause(100)
-            MCP23008.setPin(MCP_Pins.RAK_RST, false)
-        }
-        else {
-            writeSerial("ATZ")
-        }
-        setStatus(eSTATUS_MASK.ALL, 0)
-    }
-
-    /**
-     * Send LoRa module into low power mode without communication
-     * @param time in miliseconds how long to sleep
-    */
-    //% blockId=DeviceSleep
-    //% block="LoRa sleep for %time ms"
-    //% time.shadow=timePicker
-    //% group="Device"
-    export function sleep(time: number) {
-        if(!getStatus(eSTATUS_MASK.SLEEP)){
-            writeATCommand("SLEEP", time.toString())
-            setStatus(eSTATUS_MASK.SLEEP, 1)
-            setStatus(eSTATUS_MASK.READY, 0)
-        }
-    }
-
+ 
 
     /********************************************************************************
      * Procedures
@@ -338,6 +204,142 @@ namespace IoTCube {
 
         return RxData
     }
+
+    //% blockId=GetLatestEventMessage
+    //% block="Get event message"
+    //% subcategory="Configuration" group="Device"
+    export function getEventMessage() {
+        return evtMessage
+    }
+
+    //% blockId=GetLatestMessage
+    //% block="Get serial message"
+    //% subcategory="Configuration" group="Device"
+    export function getSerialMessage() {
+        return message
+    }
+
+    //% blockId=writeATCommand
+    //% block="AT | Command %typ Paramter %value"
+    //% subcategory="Configuration" group="Device"
+    export function writeATCommand(typ: string, value: string) {
+        let command = "AT+" + typ + "=" + value
+        writeSerial(command)
+    }
+
+    /**
+     * Read parameter from LoRa module
+     * @param typ RUI3 command to send
+    */
+    //% blockId=getParameter
+    //% block="Get | Parameter %typ"
+    //% subcategory="Configuration" group="Device"
+    export function getParameter(typ: eRUI3_PARAM) {
+        let command = "AT+" + strRAK_PARAM[typ] + "=?"
+        basic.pause(30)
+        writeSerial(command)
+        basic.pause(70)
+        return message.replace("AT+" + strRAK_PARAM[typ] + "=", "")
+    }
+
+    /**
+     * Set parameter of LoRa module
+     * @param typ RUI3 parameter to Set
+     * @param value new value of parameter
+    */
+    //% blockId=setParameter
+    //% block="Set | Parameter %typ to %value"
+    //% subcategory="Configuration" group="Device"
+    export function setParameter(typ: eRUI3_PARAM, value: string) {
+        let command = "AT+" + strRAK_PARAM[typ] + "=" + value
+        writeSerial(command)
+    }
+
+
+    /********************************************************************************
+     * Device Control
+     */
+
+    export function setStatus(mask: eSTATUS_MASK, state: number) {
+        if (state) {
+            status = status | mask
+        }
+        else {
+            status = status & (~mask)
+        }
+    }
+
+    //% blockId=DeviceStatusGet
+    //% block="Get Device Status Bit %mask"
+    //% group="Device"
+    export function getStatus(mask: eSTATUS_MASK): boolean {
+        if (status & mask) {
+            return true
+        }
+        return false
+    }
+
+    function setEvent(event: eRAK_EVT) {
+        status = status | (0x01 << (event + 8))
+    }
+
+    function clearEvent(event: eRAK_EVT) {
+        status = status & (~(0x01 << (event + 8)))
+    }
+
+    /**
+     * Returns true of selected event was triggered and not yet read.
+     * The event is cleared after reading.
+     * @param event is the type of event
+    */
+    //% blockId="checkRAKEvent"
+    //% block="Is event %event set?"
+    //% group="Device"
+    export function checkEvent(event: eRAK_EVT): boolean {
+        if (status & (0x01 << (event + 8))) {
+            clearEvent(event)
+            return true
+        }
+        return false
+    }
+
+    /**
+     * Execute a reset on LoRa module (soft or hard)
+     * Configuration is NOT ereased.
+    */
+    //% blockId=DeviceReset
+    //% block="Reset LoRa || Hard-Reset %hardReset"
+    //% hardReset.shadow="toggleOnOff"
+    //% hardReset.defl=false
+    //% group="Device"
+    export function resetModule(hardReset?: boolean) {
+        if (hardReset) {
+            MCP23008.setPin(MCP_Pins.RAK_RST, true)
+            basic.pause(100)
+            MCP23008.setPin(MCP_Pins.RAK_RST, false)
+        }
+        else {
+            writeSerial("ATZ")
+        }
+        setStatus(eSTATUS_MASK.ALL, 0)
+    }
+
+    /**
+     * Send LoRa module into low power mode without communication
+     * @param time in miliseconds how long to sleep
+    */
+    //% blockId=DeviceSleep
+    //% block="LoRa sleep for %time ms"
+    //% time.shadow=timePicker
+    //% group="Device"
+    export function sleep(time: number) {
+        if (!getStatus(eSTATUS_MASK.SLEEP)) {
+            writeATCommand("SLEEP", time.toString())
+            setStatus(eSTATUS_MASK.SLEEP, 1)
+            setStatus(eSTATUS_MASK.READY, 0)
+        }
+    }
+
 
     /**
      * Blocks in this section will be executed if a downlink occured.
