@@ -152,19 +152,32 @@ namespace IoTCube {
         const validData = Math.min(Math.max(data, 0), 1);
 
         // Calculate the channel
-        const channel = 251 + validID; // Channels 251 to 255 are reserved for this purpose
+        const channel = validID;
 
         addPresence(data, channel);
     }
+    
 
     //% blockId="LoRa_Send_String"
     //% block="Send | string %data || on f-Port %fport"
     //% group="Send"
     //% data.shadowOptions.toString=true
     //% fport.min=1
-    //% fport.max=223
+    //% fport.max=222
+    //% deprecated=true
     export function SendStr(data: string, fport: number,) {
         writeATCommand("SEND", fport + ":" + data)
+    }
+
+    /**
+     * Send a buffer over LoRa network.
+    */
+    //% blockId="LoRa_Send_Buffer"
+    //% block="Send Data"
+    //% group="Send"
+    export function SendBufferSimple() {
+        let data = getCayenne()
+        SendBuffer(data,223)
     }
 
     /**
@@ -177,7 +190,7 @@ namespace IoTCube {
     //% subcategory="CayenneLPP" group="Send"
     //% data.shadow="CayenneLPP_GetBuffer"
     //% fport.min=1
-    //% fport.max=223
+    //% fport.max=222
     //% fport.defl=1
     export function SendBuffer(data: Buffer=getCayenne(), fport?: number,) {
         writeATCommand("SEND", fport + ":" + data.toHex())
