@@ -12,6 +12,8 @@
   "IoTCube.addAnalogInput": "Füge Analog-Eingang zum Buffer hinzu. Bereich von -327.68 bis 327.67",
   "IoTCube.addAnalogInput|param|channel": "Cayenne Kanal",
   "IoTCube.addAnalogInput|param|data": "Zahlenwert",
+  "IoTCube.addStateToDrawer|param|data": "0 oder 1",
+  "IoTCube.addStateToDrawer|param|drawer": "Schublade",
   "IoTCube.checkEvent": "Return ist Wahr wenn das Event aufgetreten ist.\r\nDas Event wird nach dem Lesen gelöscht.",
   "IoTCube.checkEvent|param|event": "Event-Typ",
   "IoTCube.getCayenne": "Verweis zum Cayenne Buffer",
