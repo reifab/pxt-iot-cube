@@ -27,14 +27,22 @@ const strRAK_RC = [
 ]
 
 enum eRAK_EVT {
+    //% block="Join Failed"
     JOIN_FAILED,
+    //% block="Join Successful"
     JOINED,
+    //% block="Send Confirmed Failed"
     SEND_CONFIRMED_FAILED,
+    //% block="Send Confirmed Successful"
     SEND_CONFIRMED_OK,
+    //% block="Receive Window 1"
     RX_1,
+    //% block="Receive Window 2"
     RX_2,
+    //% block="Setup Failed"
     SETUP_FAILED,
-    SETUP_SUCCECSS,
+    //% block="Setup Successful"
+    SETUP_SUCCESS,
 }
 
 enum eBool {
@@ -105,18 +113,29 @@ enum eRUI3_PARAM {
 }
 
 enum eSTATUS_MASK {
+    //% block="Initialization"
     INIT = 0x01,
+    //% block="Sleep Mode"
     SLEEP = 0x02,
+    //% block="Ready"
     READY = 0x04,
+    //% block="Setup"
     SETUP = 0x08,
 
+    //% block="Connect"
     CONNECT = 0x10,
+    //% block="Auto Join"
     AUTOJOIN = 0x20,
+    //% block="Joined"
     JOINED = 0x40,
+    //% block="Network Join Mode"
     NJM = 0x80,
 
+    //% block="Buffer Full"
     BUFFER_FULL = 0x10000,
 
+    //% block="All Statuses"
     ALL = 0x1FFFF
 }
+
 

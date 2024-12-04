@@ -78,7 +78,7 @@ namespace IoTCube {
             resetModule()
             basic.pause(300)
             if(getParameter(eRUI3_PARAM.DEVEUI) == DevEUI){     // check written values
-                setEvent(eRAK_EVT.SETUP_SUCCECSS)
+                setEvent(eRAK_EVT.SETUP_SUCCESS)
             }
             setStatus(eSTATUS_MASK.SETUP, 0)
         }
@@ -113,7 +113,7 @@ namespace IoTCube {
             resetModule()
             basic.pause(300)
             if (getParameter(eRUI3_PARAM.DEVADDR) == DEVADDR) {     // check written values
-                setEvent(eRAK_EVT.SETUP_SUCCECSS)
+                setEvent(eRAK_EVT.SETUP_SUCCESS)
             }
             setStatus(eSTATUS_MASK.SETUP, 0)
         }
