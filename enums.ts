@@ -38,10 +38,10 @@ enum eRAK_EVT {
 }
 
 enum eBool {
-    //% block="No" 
-    disable,   //disable represents 0
     //% block="Yes"
-    enable     //enable represents 1
+    enable=1,     //enable represents 1
+    //% block="No" 
+    disable = 0   //disable represents 0
 }
 
 enum eBands {

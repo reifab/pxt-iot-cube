@@ -19,7 +19,7 @@ loops.everyInterval(1500, function() {
 })
 
 //% color="#00796b" icon="\uf1eb" block="IoT Cube"
-//% groups="['Prepare to Send', 'Send', 'Receive', 'Device', 'Pins']"
+//% groups="['OnStart', Prepare to Send', 'Send', 'Receive', 'Device', 'Pins']"
 namespace IoTCube {
  
     let message: string= ""
@@ -123,13 +123,13 @@ namespace IoTCube {
      * Join LoRa network
      * @param join allows connect or disconnect.
      * @param auto_join is stored on the device and allows joining on power-up.
-     * @param reattempt is the number of times a connection is tried to setup.
+     * @param attempts is the number of times a connection is tried to setup.
      * @param interval is the time between join attempts
     */
     //% blockId="Network_Join"
     //% block="LoRa Network Join | Join %join On Power-up %auto_join Reattempt interval %interval attempts %attempts"
     //% interval.defl=10, attempts.defl=8
-    //% subcategory="Configuration" group="Setup" weight=120
+    //% group="OnStart" weight=120
     export function LoRa_Join(join: eBool = eBool.enable, auto_join: eBool = eBool.enable, interval?: number, attempts?: number) {
         writeATCommand("JOIN", join + ":" + auto_join + ":" + interval + ":" + attempts )
         setStatus(eSTATUS_MASK.CONNECT, 1)
