@@ -151,7 +151,7 @@ namespace IoTCube {
         // Calculate the channel
         const channel = validID;
 
-        addPresence(data, channel);
+        addPresence(validData, channel);
     }
 
     //% blockId="CayenneLPP_Illuminance_used_for_unsigned_int_value_simplified_interface"
@@ -170,7 +170,7 @@ namespace IoTCube {
         // Calculate the channel
         const channel = validID;
 
-        addIlluminance(data, channel);
+        addIlluminance(validData, channel);
     }
 
     //% blockId="CayenneLPP_analog_out_used_for_float_value_simplified_interface"
@@ -192,9 +192,9 @@ namespace IoTCube {
         }
 
         // Decide which function to use based on the value of data
-        if (data >= -327.68 && data <= 327.67) {
+        if (validData >= -327.68 && validData <= 327.67) {
             // Use addAnalogOutput for data in the range -327.68 to +327.67
-            addAnalogOutput(data, validID);
+            addAnalogOutput(validData, validID);
         } else {
             // Use addTemperature for data in the range -3276.8 to +3276.7
             // If data is outside this range, validData is already limited
