@@ -8,6 +8,7 @@
   "IoTCube.LoRa_Join|param|join": "Verbinden oder Trennen",
   "IoTCube.OTAA_Setup": "Konfiguration der Verbindung. Einstellungen werden auf dem Gerät gespeichert.",
   "IoTCube.SendBuffer": "Senden eines Buffers über das LoRa Netzwerk",
+  "IoTCube.SendBufferSimple": "Senden eines Buffers über das LoRa Netzwerk, Nutzung der vereinfachten Schnittstelle",
   "IoTCube.SendBuffer|param|data": "Buffer Variable mit Daten (normalerweise im CayenneLPP Format)",
   "IoTCube.addAnalogInput": "Füge Analog-Eingang zum Buffer hinzu. Bereich von -327.68 bis 327.67",
   "IoTCube.addAnalogInput|param|channel": "Cayenne Kanal",
