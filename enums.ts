@@ -3,6 +3,13 @@
  * GBS St. Gallen, 2022
  */
 
+enum eIDs {
+    ID_0 = 0,
+    ID_1 = 1,
+    ID_2 = 2,
+    ID_3 = 3,
+    ID_4 = 4
+}
 
 enum eRAK_RC {
     OK,                     //command runs correctly without error.

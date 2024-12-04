@@ -18,11 +18,10 @@ loops.everyInterval(1500, function() {
     IoTCube.watchdog()
 })
 
-
-
 //% color="#00796b" icon="\uf1eb" block="IoT Cube"
 //% groups="['Prepare to Send', 'Send', 'Receive', 'Device', 'Pins']"
 namespace IoTCube {
+ 
     let message: string= ""
     let RxPort: number=0
     let evtMessage: string = ""
@@ -136,15 +135,13 @@ namespace IoTCube {
         setStatus(eSTATUS_MASK.CONNECT, 1)
     }
 
-    //% blockId="CayenneLPP_Presence_used_for_bool_simplified_interface"
-    //% block="Add binary value %data with the ID %id"
+    //% blockId="CayenneLPP_Presence_used_for_binary_value_simplified_interface"
+    //% block="Add binary value with %id = %data"
     //% group="Prepare to Send"
     //% data.min=0
     //% data.max=1
-    //% id.min=0
-    //% id.max=4
-    //% id.defl=1
-    export function addBinary(data: number, id: number) {
+    //% data.defl=0
+    export function addBinary(id: eIDs, data: number = 0) {
         // Limit ID to the range 0 to 4
         const validID = Math.min(Math.max(id, 0), 4);
 
@@ -155,6 +152,54 @@ namespace IoTCube {
         const channel = validID;
 
         addPresence(data, channel);
+    }
+
+    //% blockId="CayenneLPP_Illuminance_used_for_unsigned_int_value_simplified_interface"
+    //% block="Add unsigned integer value with %id = %data"
+    //% group="Prepare to Send"
+    //% data.min=0
+    //% data.max=65535
+    //% data.defl=0
+    export function addPositiveInteger(id: eIDs, data: number = 0) {
+        // Limit ID to the range 0 to 4
+        const validID = Math.min(Math.max(id, 0), 4);
+
+        // Limit data to the range 0 to 65535
+        const validData = Math.min(Math.max(data, 0), 65535);
+
+        // Calculate the channel
+        const channel = validID;
+
+        addIlluminance(data, channel);
+    }
+
+    //% blockId="CayenneLPP_analog_out_used_for_float_value_simplified_interface"
+    //% block="Add float value with %id = %data"
+    //% group="Prepare to Send"
+    //% data.min=-3276.8
+    //% data.max=3276.7
+    //% data.defl=0
+    export function addFloat(id: eIDs, data: number = 0) {
+        // Limit ID to the range 0 to 4
+        const validID = Math.min(Math.max(id, 0), 4);
+
+        // Limit data to the range -3276.8 to 3276.7
+        let validData = data;
+        if (data < -3276.8) {
+            validData = -3276.8;
+        } else if (data > 3276.7) {
+            validData = 3276.7;
+        }
+
+        // Decide which function to use based on the value of data
+        if (data >= -327.68 && data <= 327.67) {
+            // Use addAnalogOutput for data in the range -327.68 to +327.67
+            addAnalogOutput(data, validID);
+        } else {
+            // Use addTemperature for data in the range -3276.8 to +3276.7
+            // If data is outside this range, validData is already limited
+            addTemperature(validData, validID);
+        }
     }
     
 
