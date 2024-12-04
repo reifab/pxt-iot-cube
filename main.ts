@@ -160,7 +160,7 @@ namespace IoTCube {
     //% data.min=0
     //% data.max=65535
     //% data.defl=0
-    export function addPositiveInteger(id: eIDs, data: number = 0) {
+    export function addUnsignedInteger(id: eIDs, data: number = 0) {
         // Limit ID to the range 0 to 4
         const validID = Math.min(Math.max(id, 0), 4);
 
