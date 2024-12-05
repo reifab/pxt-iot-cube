@@ -217,7 +217,7 @@ namespace IoTCube {
     /**
      * Send a buffer over LoRa network.
     */
-    //% blockId="LoRa_Send_Buffer"
+    //% blockId="LoRa_Send_Buffer_Simple"
     //% block="Send Data"
     //% group="Send"
     export function SendBufferSimple() {
