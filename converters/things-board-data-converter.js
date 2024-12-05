@@ -1,4 +1,4 @@
-// Smartfeld, F. Reifler, 2024-12-12   - Initial version
+// Smartfeld, F. Reifler, 2024-12-12   - V.1.0.0
 // Converter for the ThingsBoard integration of the IoT Cube project.
 // This converter is used to convert the payload of the IoT Cube devices to a format that can be used by ThingsBoard.
 
