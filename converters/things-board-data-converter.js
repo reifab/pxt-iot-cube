@@ -1,12 +1,15 @@
-//decode payload to JSON:
+// Smartfeld, F. Reifler, 2024-12-12   - Initial version
+// Converter for the ThingsBoard integration of the IoT Cube project.
+// This converter is used to convert the payload of the IoT Cube devices to a format that can be used by ThingsBoard.
+
+// Decode payload to JSON:
 const RESERVED_F_PORT = 223;
 
 const data = decodeToJson(payload);
 
-var gateway_eui = data.uplink_message.rx_metadata[0]
-    .gateway_ids.eui;
+var gateway_eui = data.uplink_message.rx_metadata[0].gateway_ids.eui;
 
-//Set Telemetry to received decoded payload (decoded from TTN, Cayenne):
+// Set telemetry to received decoded payload (decoded from TTN, Cayenne):
 let telemetry = data.uplink_message.decoded_payload;
 
 //Change identifiers to simplify Cayenne LPP for younger lerners, if F_PORT 
@@ -27,8 +30,9 @@ telemetry.rssi = rssi;
 telemetry.snr = snr;
 telemetry.gateway_eui = gateway_eui;
 
-const gpsKey = Object.keys(telemetry).find(key => key
-    .startsWith('gps_') && telemetry[key] != null);
+const gpsKey = Object.keys(telemetry).find(
+    key => key.startsWith('gps_') && telemetry[key] != null
+);
 
 if (gpsKey) {
     telemetry.longitude = telemetry[gpsKey].longitude;
@@ -37,21 +41,19 @@ if (gpsKey) {
     delete telemetry[gpsKey];
 }
 
-//DeviceName is "eui-2022-b-07" for example:
-var deviceName = data.end_device_ids.device_id + ".";
+// DeviceName is "eui-2022-b-07" for example:
+var deviceName = data.end_device_ids.device_id;
 
-//***Device Type***//
-//Pro Device Type kann eine eigene Rulechain definiert und ausgewählt werden.
-//Device Type ist zum Beispiel "app-iot-wuerfel-klassensatz-a":
-const applicationID = data.end_device_ids.application_ids
-    .application_id;
+// ***Device Type***//
+// For each Device Type, a separate Rule Chain can be defined and selected.
+// Device Type is, for example, "app-iot-wuerfel-klassensatz-a":
+const applicationID = data.end_device_ids.application_ids.application_id;
 
 const deviceType = getDeviceType(applicationID);
 
 const customerName = getCustomerName(applicationID);
 
-var groupName = data.end_device_ids.application_ids
-    .application_id + "-device-group";
+var groupName = data.end_device_ids.application_ids.application_id + "-device-group";
 
 var result = {
     groupName: groupName,
@@ -64,11 +66,10 @@ var result = {
 
 function getDeviceType(applicationID) {
     // Regular expression to match the pattern 'app-iot-wuerfel-klassensatz-' followed by a letter
-    const match = applicationID.match(
-        /app-iot-wuerfel-klassensatz-([a-fA-F])/);
+    const match = applicationID.match(/app-iot-wuerfel-klassensatz-([a-fA-F])/);
 
     if (match && match[1]) {
-        // Extract the letter, convert it to uppercase, and build the customer name
+        // Extract the letter and build the device type
         const letter = match[1];
         return `device-type-klassensatz-${letter}`;
     } else {
@@ -78,8 +79,7 @@ function getDeviceType(applicationID) {
 
 function getCustomerName(inputString) {
     // Regular expression to match the pattern 'klassensatz-' followed by a letter
-    const match = inputString.match(
-        /klassensatz-([a-fA-F])/);
+    const match = inputString.match(/klassensatz-([a-fA-F])/);
 
     if (match && match[1]) {
         // Extract the letter, convert it to uppercase, and build the customer name
@@ -101,19 +101,21 @@ function decodeToJson(payload) {
 }
 
 function transformKeys(obj, oldPrefix, newPrefix) {
-    const keys = Object.keys(obj).filter(key => key.startsWith(oldPrefix) && obj[key] != null);
+    const keys = Object.keys(obj).filter(
+        key => key.startsWith(oldPrefix) && obj[key] != null
+    );
 
     keys.forEach(oldKey => {
-        // Extrahiere den Teil nach dem alten Präfix
+        // Extract the part after the old prefix
         const suffix = oldKey.substring(oldPrefix.length);
-        
-        // Erzeuge den neuen Schlüssel mit dem neuen Präfix
+
+        // Create the new key with the new prefix
         const newKey = `${newPrefix}${suffix}`;
-        
-        // Setze den Wert für den neuen Schlüssel
+
+        // Set the value for the new key
         obj[newKey] = obj[oldKey];
-        
-        // Entferne den alten Schlüssel
+
+        // Remove the old key
         delete obj[oldKey];
     });
 }
