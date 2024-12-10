@@ -12,8 +12,8 @@
         "port_expander.ts",
         "payload_format.ts",
         "enums_payload.ts",
-        "_locales/de/IoT-Würfel-jsdoc-strings.json",
-        "_locales/de/IoT-Würfel-strings.json"
+        "_locales/de/IoT-Cube-jsdoc-strings.json",
+        "_locales/de/IoT-Cube-strings.json"
     ],
     "testFiles": [
         "test.ts"
