@@ -26,6 +26,8 @@ namespace IoTCube {
     let RxPort: number=0
     let evtMessage: string = ""
     let status: number = 0
+    let lastSendTime: number = 0
+
     export let MCP23008 = new MCP(MCP_Defaults.I2C_ADDRESS, MCP_Defaults.IODIR, MCP_Defaults.GPIO)
 
     serial.redirect(SerialPin.P8, SerialPin.P13, BaudRate.BaudRate115200)
@@ -215,15 +217,28 @@ namespace IoTCube {
     }
 
     /**
-     * Send a buffer over LoRa network.
-    */
+     * Send a buffer over LoRa network, but only every 10 seconds.
+     */
     //% blockId="LoRa_Send_Buffer_Simple"
     //% block="Send Data"
     //% group="Send"
     export function SendBufferSimple() {
-        let data = getCayenne()
-        SendBuffer(data,223)
+        const currentTime = control.millis(); // system time
+        const sendInterval = 10000; // intervall in ms
+
+        if (currentTime - lastSendTime >= sendInterval) {
+            let data = getCayenne();
+            SendBuffer(data, 223);
+            lastSendTime = currentTime; // update last system time
+        } else {
+            const remainingTime = sendInterval - (currentTime - lastSendTime);
+            control.inBackground(() => {
+                basic.pause(remainingTime); // wait to the next possible sending event
+                SendBufferSimple(); 
+            });
+        }
     }
+
 
     /**
      * Send a buffer over LoRa network.
